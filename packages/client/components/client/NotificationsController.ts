@@ -91,7 +91,7 @@ export function useNotifications() {
   const enablePushSubscription = async () => {
     settings.pushNotificationsState = "allowed";
     try {
-      await setUpServiceWorkerSubscription(getClient());
+      await setUpPushSubscription(getClient());
     } catch (e) {
       console.error(e);
       snackbar.show({
@@ -126,6 +126,37 @@ export function useNotifications() {
   };
 }
 
+function supportsNativeAPNSNotifications() {
+  return Boolean(window.native?.pushNotifications?.isSupported());
+}
+
+async function setUpPushSubscription(client: Client) {
+  if (supportsNativeAPNSNotifications()) {
+    await setUpAPNSSubscription(client);
+  } else {
+    await setUpServiceWorkerSubscription(client);
+  }
+}
+
+async function setUpAPNSSubscription(client: Client) {
+  if (!client.configured() || !client.configuration) {
+    throw "Client not configured";
+  }
+
+  const pushNotifications = window.native?.pushNotifications;
+  if (!pushNotifications?.isSupported()) {
+    throw "Native APNs notifications are not supported";
+  }
+
+  const token = await pushNotifications.registerForAPNSNotifications();
+
+  await client.api.post("/push/subscribe", {
+    endpoint: "apn_desktop",
+    p256dh: "",
+    auth: token,
+  });
+}
+
 async function setUpServiceWorkerSubscription(client: Client) {
   if (IS_DEV) {
     console.log("Skipping push worker in dev.");
@@ -148,7 +179,7 @@ async function setUpServiceWorkerSubscription(client: Client) {
       applicationServerKey: client.configuration!.vapid,
     }));
 
-  client.api.post("/push/subscribe", {
+  await client.api.post("/push/subscribe", {
     endpoint: subscription.endpoint,
     p256dh: arrayBufferToBase64URL(
       subscription.getKey("p256dh") || new ArrayBuffer(),
@@ -174,6 +205,13 @@ function arrayBufferToBase64URL(buffer: ArrayBuffer): string {
 
 /** Exported for the client controller. Don't use this unless you have to. */
 export async function killServiceWorkerSubscription(client: Client) {
+  const pushNotifications = window.native?.pushNotifications;
+  if (pushNotifications?.isSupported()) {
+    await pushNotifications.unregisterForAPNSNotifications();
+    await client.api.post("/push/unsubscribe");
+    return;
+  }
+
   if (IS_DEV) {
     console.log("Skipping killing push worker in dev.");
     return;

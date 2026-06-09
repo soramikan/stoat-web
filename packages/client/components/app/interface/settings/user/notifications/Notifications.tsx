@@ -14,6 +14,8 @@ import Sounds from "./Sounds";
  */
 export default function Notifications(props: { isDesktop: boolean }) {
   const { settings } = useState();
+  const supportsNativePush = () =>
+    Boolean(window.native?.pushNotifications?.isSupported());
 
   const { toggleNotificationPermission, togglePushPermission } =
     useNotifications();
@@ -45,7 +47,7 @@ export default function Notifications(props: { isDesktop: boolean }) {
               <Trans>Enable Desktop Notifications</Trans>
             </CategoryButton>
           </Show>
-          <Show when={!props.isDesktop}>
+          <Show when={!props.isDesktop || supportsNativePush()}>
             <CategoryButton
               action={
                 <Checkbox
@@ -55,9 +57,15 @@ export default function Notifications(props: { isDesktop: boolean }) {
               onClick={() => togglePushPermission(true)}
               icon={<MdMarkUnreadChatAlt {...iconSize(22)} />}
               description={
-                <Trans>
-                  Receive push notifications while the app is closed.
-                </Trans>
+                props.isDesktop ? (
+                  <Trans>
+                    Receive push notifications while the desktop app is closed.
+                  </Trans>
+                ) : (
+                  <Trans>
+                    Receive push notifications while the app is closed.
+                  </Trans>
+                )
               }
             >
               <Trans>Enable Push Notifications</Trans>

@@ -30,6 +30,12 @@ declare global {
       minimise(): void;
       maximise(): void;
       close(): void;
+      setBadgeCount(count: number): void;
+      pushNotifications?: {
+        isSupported(): boolean;
+        registerForAPNSNotifications(): Promise<string>;
+        unregisterForAPNSNotifications(): Promise<void>;
+      };
       onceScreenPicker(
         onScreenPick: (
           sources: {

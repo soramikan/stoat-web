@@ -2415,6 +2415,10 @@ msgstr ""
 msgid "Receive push notifications while the app is closed."
 msgstr ""
 
+#: components/app/interface/settings/user/notifications/Notifications.tsx
+msgid "Receive push notifications while the desktop app is closed."
+msgstr ""
+
 #: components/ui/components/features/voice/callCard/VoiceCallCardStatus.tsx
 msgid "Reconnecting"
 msgstr ""
