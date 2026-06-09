@@ -115,8 +115,14 @@ export const ServerList = (props: Props) => {
   const [menuButton, setMenuButton] = createSignal<HTMLDivElement>();
 
   return (
-    <ServerListBase>
-      <div use:invisibleScrollable={{ direction: "y", class: listBase() }}>
+    <ServerListBase class="app-server-rail">
+      <div
+        class="app-server-rail-scroll"
+        use:invisibleScrollable={{
+          direction: "y",
+          class: `${listBase()} app-server-rail-scroll`,
+        }}
+      >
         <a
           class={entryContainer({
             indicator: !props.selectedServer() ? "selected" : undefined,
@@ -206,7 +212,7 @@ export const ServerList = (props: Props) => {
             />
           </a>
         </Show>
-        <LineDivider />
+        <LineDivider class="app-server-rail-divider" />
         <Draggable
           type="servers"
           items={props.orderedServers}
@@ -306,12 +312,12 @@ export const ServerList = (props: Props) => {
           </Tooltip>
         </Show>
       </div>
-      <Shadow>
+      <Shadow class="app-server-rail-shadow">
         <div />
       </Shadow>
       <Tooltip placement="right" content="Settings">
         <a
-          class={entryContainer()}
+          class={`${entryContainer()} app-server-rail-settings`}
           onClick={() => openModal({ type: "settings", config: "user" })}
         >
           <Avatar size={42} fallback={<MdSettings />} interactive />

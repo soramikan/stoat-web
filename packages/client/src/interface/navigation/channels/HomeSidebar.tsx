@@ -66,7 +66,7 @@ export const HomeSidebar = (props: Props) => {
   });
 
   return (
-    <SidebarBase>
+    <SidebarBase class="app-channel-drawer">
       <div ref={scrollTargetElement} use:invisibleScrollable>
         <List>
           <SidebarTitle>

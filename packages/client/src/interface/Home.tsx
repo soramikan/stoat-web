@@ -117,8 +117,8 @@ export function HomePage() {
             })}
           />
         </Column>
-        <Buttons>
-          <SeparatedColumn>
+        <Buttons class="app-home-actions">
+          <SeparatedColumn class="app-home-action-column">
             <CategoryButton
               onClick={() =>
                 openModal({
@@ -184,7 +184,7 @@ export function HomePage() {
               <Trans>Donate to Stoat</Trans>
             </CategoryButton>
           </SeparatedColumn>
-          <SeparatedColumn>
+          <SeparatedColumn class="app-home-action-column">
             <Show when={CONFIGURATION.IS_STOAT}>
               <CategoryButton
                 onClick={() => navigate("/discover")}
@@ -218,8 +218,8 @@ export function HomePage() {
             <CategoryButton
               onClick={() => openModal({ type: "settings", config: "user" })}
               description={
-                <Trans>
-                  You can also click the gear icon in the bottom left.
+                <Trans id="4nVJo5">
+                  You can also open this from the gear icon in the menu.
                 </Trans>
               }
               icon={<MdSettings />}

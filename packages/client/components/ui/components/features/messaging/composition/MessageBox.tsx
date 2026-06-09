@@ -228,8 +228,11 @@ export function MessageBox(props: Props) {
   );
 
   return (
-    <Parent>
-      <Base hasActionsAppend={props.hasActionsAppend}>
+    <Parent class="app-message-box">
+      <Base
+        class="app-message-box-base"
+        hasActionsAppend={props.hasActionsAppend}
+      >
         <Switch fallback={props.actionsStart}>
           <Match when={!props.sendingAllowed}>
             <InlineIcon size="wide">

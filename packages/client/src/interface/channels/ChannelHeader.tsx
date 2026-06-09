@@ -82,7 +82,7 @@ export function ChannelHeader(props: Props) {
             <Symbol>grid_3x3</Symbol>
           </HeaderIcon>
           <NonBreakingText
-            class={typography({ class: "title", size: "medium" })}
+            class={`${typography({ class: "title", size: "medium" })} app-channel-title`}
             onClick={() =>
               openModal({
                 type: "channel_info",
@@ -93,9 +93,9 @@ export function ChannelHeader(props: Props) {
             <TextWithEmoji content={props.channel.name!} />
           </NonBreakingText>
           <Show when={props.channel.description}>
-            <Divider />
+            <Divider class="app-channel-divider" />
             <a
-              class={descriptionLink}
+              class={`${descriptionLink} app-channel-description`}
               onClick={() =>
                 openModal({
                   type: "channel_info",
@@ -123,14 +123,18 @@ export function ChannelHeader(props: Props) {
           <HeaderIcon>
             <Symbol>alternate_email</Symbol>
           </HeaderIcon>
-          <TextWithEmoji content={props.channel.recipient?.username} />
+          <span class="app-channel-title">
+            <TextWithEmoji content={props.channel.recipient?.username} />
+          </span>
           <UserStatus status={props.channel.recipient?.presence} size="8px" />
         </Match>
         <Match when={props.channel.type === "SavedMessages"}>
           <HeaderIcon>
             <Symbol>note_stack</Symbol>
           </HeaderIcon>
-          <Trans>Saved Notes</Trans>
+          <span class="app-channel-title">
+            <Trans>Saved Notes</Trans>
+          </span>
         </Match>
       </Switch>
 
@@ -252,13 +256,13 @@ export function ChannelHeader(props: Props) {
 
       <Show when={searchValue() !== null}>
         <input
-          class={css({
+          class={`${css({
             height: "40px",
             width: "240px",
             paddingInline: "16px",
             borderRadius: "var(--borderRadius-full)",
             background: "var(--md-sys-color-surface-container-high)",
-          })}
+          })} app-channel-search`}
           placeholder={t`Search messages...`}
           value={searchValue()!}
           onChange={(e) =>

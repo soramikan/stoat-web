@@ -3473,7 +3473,7 @@ msgstr "You are banned from this server."
 
 #: src/interface/Home.tsx
 msgid "You can also click the gear icon in the bottom left."
-msgstr "You can also click the gear icon in the bottom left."
+msgstr "You can also open this from the gear icon in the menu."
 
 #: src/interface/Home.tsx
 #~ msgid "You can also right-click the user icon in the top left, or left click it if you're already home."

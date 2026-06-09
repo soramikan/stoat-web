@@ -3473,7 +3473,7 @@ msgstr "あなたはこのサーバーからBANされています。"
 
 #: src/interface/Home.tsx
 msgid "You can also click the gear icon in the bottom left."
-msgstr "左下の歯車アイコンをクリックすることもできます。"
+msgstr "ハンバーガーメニュー内の歯車アイコンからも開けます。"
 
 #: src/interface/Home.tsx
 #~ msgid "You can also right-click the user icon in the top left, or left click it if you're already home."

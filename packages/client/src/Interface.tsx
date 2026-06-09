@@ -9,6 +9,7 @@ import { Titlebar } from "@revolt/app/interface/desktop/Titlebar";
 import { useClient, useClientLifecycle } from "@revolt/client";
 import { State } from "@revolt/client/Controller";
 import { NotificationsWorker } from "@revolt/client/NotificationsWorker";
+import { useDevice } from "@revolt/common";
 import { useModals } from "@revolt/modal";
 import { Navigate, useBeforeLeave, useLocation } from "@revolt/routing";
 import { useState } from "@revolt/state";
@@ -25,7 +26,8 @@ const Interface = (props: { children: JSX.Element }) => {
   const client = useClient();
   const { openModal } = useModals();
   const { isLoggedIn, lifecycle } = useClientLifecycle();
-  const { pathname } = useLocation();
+  const location = useLocation();
+  const device = useDevice();
 
   useBeforeLeave((e) => {
     if (!e.defaultPrevented) {
@@ -43,9 +45,19 @@ const Interface = (props: { children: JSX.Element }) => {
 
   createEffect(() => {
     if (!isLoggedIn()) {
-      state.layout.setNextPath(pathname);
+      state.layout.setNextPath(location.pathname);
       console.debug("WAITING... currently", lifecycle.state());
     }
+  });
+
+  createEffect(() => {
+    if (device.layout() !== "phone") return;
+
+    // Phone layout uses drawers instead of persistent side panels.
+    // Close them on route changes so selecting a channel returns to the chat.
+    if (!location.pathname) return;
+    state.layout.setSectionState(LAYOUT_SECTIONS.PRIMARY_SIDEBAR, false, true);
+    state.layout.setSectionState(LAYOUT_SECTIONS.MEMBER_SIDEBAR, false, true);
   });
 
   function isDisconnected() {
@@ -60,6 +72,7 @@ const Interface = (props: { children: JSX.Element }) => {
   return (
     <MessageCache client={client()}>
       <div
+        class="app-root"
         style={{
           display: "flex",
           "flex-direction": "column",
@@ -73,6 +86,7 @@ const Interface = (props: { children: JSX.Element }) => {
           </Match>
           <Match when={lifecycle.loadedOnce()}>
             <Layout
+              class="app-layout"
               disconnected={isDisconnected()}
               style={{ "flex-grow": 1, "min-height": 0 }}
               onDragOver={(e) => {
@@ -96,6 +110,7 @@ const Interface = (props: { children: JSX.Element }) => {
                 })}
               />
               <Content
+                class="app-content"
                 sidebar={state.layout.getSectionState(
                   LAYOUT_SECTIONS.PRIMARY_SIDEBAR,
                   true,

@@ -158,15 +158,15 @@ export function TextChannel(props: ChannelPageProps) {
 
   return (
     <>
-      <Header placement="primary">
+      <Header class="app-channel-header" placement="primary">
         <ChannelHeader
           channel={props.channel}
           sidebarState={sidebarState}
           setSidebarState={setSidebarState}
         />
       </Header>
-      <Content>
-        <main class={main()}>
+      <Content class="app-channel-content">
+        <main class={`${main()} app-main`}>
           <Show
             when={canConnect()}
             fallback={
@@ -226,7 +226,7 @@ export function TextChannel(props: ChannelPageProps) {
             use:scrollable={{
               direction: "y",
               showOnHover: true,
-              class: sidebar(),
+              class: `${sidebar()} app-member-drawer`,
             }}
             style={{
               width: sidebarState().state !== "default" ? "360px" : "",

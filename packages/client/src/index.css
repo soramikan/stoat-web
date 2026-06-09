@@ -1,1 +1,253 @@
 @layer reset, base, tokens, recipes, utilities;
+
+@layer base {
+  .app-root {
+    min-height: 0;
+    padding-top: env(safe-area-inset-top);
+    padding-inline-start: env(safe-area-inset-left);
+    padding-inline-end: env(safe-area-inset-right);
+  }
+
+  .app-layout {
+    min-height: 0;
+  }
+
+  @media (max-width: 600px) {
+    .app-layout {
+      position: relative;
+      overflow: hidden;
+    }
+
+    .app-content {
+      border-radius: 0 !important;
+    }
+
+    .app-sidebar-shell {
+      --app-mobile-sidebar-width: min(92vw, 360px);
+      --app-server-rail-width: 68px;
+
+      position: absolute;
+      inset: 0;
+      z-index: 40;
+      display: block !important;
+      pointer-events: none;
+    }
+
+    .app-sidebar-scrim {
+      position: absolute;
+      z-index: 1;
+      inset: 0;
+      width: 100%;
+      border: 0;
+      padding: 0;
+      background: color-mix(
+        in srgb,
+        var(--md-sys-color-shadow) 35%,
+        transparent
+      );
+      pointer-events: auto;
+    }
+
+    .app-sidebar-close {
+      position: absolute;
+      z-index: 4;
+      top: 8px;
+      left: calc(var(--app-mobile-sidebar-width) - 52px);
+      display: grid;
+      width: 44px;
+      height: 44px;
+      place-items: center;
+      border: 0;
+      border-radius: var(--borderRadius-full);
+      color: var(--md-sys-color-on-surface);
+      background: color-mix(
+        in srgb,
+        var(--md-sys-color-surface-container-highest) 88%,
+        transparent
+      );
+      pointer-events: auto;
+    }
+
+    .app-server-rail {
+      position: absolute;
+      z-index: 3;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      width: var(--app-server-rail-width);
+      display: flex !important;
+      flex-direction: column !important;
+      align-items: stretch;
+      padding-block: 6px;
+      border-right: 1px solid var(--md-sys-color-outline-variant);
+      background: var(--md-sys-color-surface-container-high);
+      box-shadow: 12px 0 32px
+        color-mix(in srgb, var(--md-sys-color-shadow) 22%, transparent);
+      transform: translateX(-100%);
+      transition:
+        transform 180ms cubic-bezier(0.22, 1, 0.36, 1),
+        visibility 180ms step-end;
+      pointer-events: auto;
+    }
+
+    .app-server-rail-scroll {
+      display: flex !important;
+      flex: 1 1 auto;
+      flex-direction: column;
+      align-items: center;
+      min-height: 0;
+      overflow-x: hidden !important;
+      overflow-y: auto !important;
+      scrollbar-width: none;
+    }
+
+    .app-server-rail-scroll::-webkit-scrollbar {
+      display: none;
+    }
+
+    .app-server-rail-shadow {
+      display: none;
+    }
+
+    .app-server-rail-divider {
+      width: 32px !important;
+      height: 1px !important;
+      margin: 4px 0 !important;
+    }
+
+    .app-server-rail-settings {
+      flex: 0 0 auto;
+      margin: 4px 0 0;
+    }
+
+    .app-channel-drawer {
+      position: absolute;
+      z-index: 2;
+      top: 0;
+      bottom: 0;
+      left: var(--app-server-rail-width);
+      width: calc(
+        var(--app-mobile-sidebar-width) - var(--app-server-rail-width)
+      ) !important;
+      max-width: 320px;
+      border-radius: 0 var(--borderRadius-lg) var(--borderRadius-lg) 0 !important;
+      box-shadow: 12px 0 32px
+        color-mix(in srgb, var(--md-sys-color-shadow) 22%, transparent);
+      transform: translateX(calc(-100% - var(--app-server-rail-width)));
+      transition:
+        transform 180ms cubic-bezier(0.22, 1, 0.36, 1),
+        visibility 180ms step-end;
+      pointer-events: auto;
+    }
+
+    .app-sidebar-shell[data-primary-open="true"] .app-server-rail,
+    .app-sidebar-shell[data-primary-open="true"] .app-channel-drawer {
+      transform: translateX(0);
+      visibility: visible;
+      transition:
+        transform 180ms cubic-bezier(0.22, 1, 0.36, 1),
+        visibility 0ms;
+    }
+
+    .app-sidebar-shell[data-primary-open="false"] .app-sidebar-scrim,
+    .app-sidebar-shell[data-primary-open="false"] .app-sidebar-close,
+    .app-sidebar-shell[data-primary-open="false"] .app-server-rail,
+    .app-sidebar-shell[data-primary-open="false"] .app-channel-drawer {
+      display: none !important;
+    }
+
+    .app-channel-header {
+      height: 52px !important;
+      margin: 8px !important;
+      padding: 0 8px !important;
+      gap: 6px !important;
+      border-radius: 16px !important;
+    }
+
+    .app-header-menu-button {
+      justify-content: center;
+      gap: 2px;
+      min-width: 44px;
+      min-height: 44px;
+      margin-inline-start: -4px;
+    }
+
+    .app-channel-title {
+      flex: 1 1 auto;
+      min-width: 0;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
+
+    .app-channel-description,
+    .app-channel-divider {
+      display: none !important;
+    }
+
+    .app-channel-search {
+      flex: 1 1 120px;
+      min-width: 0;
+      width: auto !important;
+      max-width: min(42vw, 176px);
+      padding-inline: 12px !important;
+    }
+
+    .app-channel-content {
+      position: relative;
+      overflow: hidden;
+    }
+
+    .app-main {
+      margin: 0 !important;
+      padding-inline: 8px !important;
+      border-radius: 0 !important;
+    }
+
+    .app-member-drawer {
+      position: absolute !important;
+      z-index: 20;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      width: min(92vw, 360px) !important;
+      max-width: calc(100vw - 24px);
+      border-radius: var(--borderRadius-lg) 0 0 var(--borderRadius-lg) !important;
+      background: var(--md-sys-color-surface-container-low);
+      box-shadow: -12px 0 32px
+        color-mix(in srgb, var(--md-sys-color-shadow) 22%, transparent);
+    }
+
+    .app-message-box {
+      gap: 6px !important;
+      max-height: min(42vh, 260px) !important;
+      margin-bottom: 8px !important;
+    }
+
+    .app-message-box-base {
+      padding-block: 6px !important;
+      padding-inline-end: 4px !important;
+    }
+
+    .app-floating-tooltip {
+      display: none !important;
+    }
+
+    .app-home-actions {
+      width: min(100% - 24px, 360px);
+      flex-direction: column !important;
+      align-items: stretch;
+    }
+
+    .app-home-action-column {
+      width: 100% !important;
+      margin-inline: 0 !important;
+    }
+  }
+
+  @media (max-width: 380px) {
+    .app-channel-search {
+      max-width: 128px;
+    }
+  }
+}

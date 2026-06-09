@@ -1,5 +1,6 @@
 import { Component, JSX, Match, Show, Switch, createMemo } from "solid-js";
 
+import { useLingui } from "@lingui-solid/solid/macro";
 import { Channel, Server as ServerI } from "stoat.js";
 
 import {
@@ -8,10 +9,12 @@ import {
   ServerSidebarContextMenu,
 } from "@revolt/app";
 import { useClient, useUser } from "@revolt/client";
+import { useDevice } from "@revolt/common";
 import { useModals } from "@revolt/modal";
 import { useLocation, useParams, useSmartParams } from "@revolt/routing";
 import { useState } from "@revolt/state";
 import { LAYOUT_SECTIONS } from "@revolt/state/stores/Layout";
+import { Symbol } from "@revolt/ui/components/utils/Symbol";
 
 import { HomeSidebar, ServerList, ServerSidebar } from "./navigation";
 
@@ -28,12 +31,44 @@ export const Sidebar = (props: {
   const state = useState();
   const client = useClient();
   const { openModal } = useModals();
+  const device = useDevice();
+  const { t } = useLingui();
 
   const params = useParams<{ server: string }>();
   const location = useLocation();
 
+  const primarySidebarOpen = createMemo(
+    () =>
+      state.layout.getSectionState(LAYOUT_SECTIONS.PRIMARY_SIDEBAR, true) &&
+      !location.pathname.startsWith("/discover"),
+  );
+
+  const closePrimarySidebar = () =>
+    state.layout.setSectionState(LAYOUT_SECTIONS.PRIMARY_SIDEBAR, false, true);
+
   return (
-    <div style={{ display: "flex", "flex-shrink": 0 }}>
+    <div
+      class="app-sidebar-shell"
+      data-primary-open={primarySidebarOpen() ? "true" : "false"}
+      style={{ display: "flex", "flex-shrink": 0 }}
+    >
+      <Show when={device.layout() === "phone" && primarySidebarOpen()}>
+        <button
+          type="button"
+          class="app-sidebar-scrim"
+          aria-hidden="true"
+          tabIndex={-1}
+          onClick={closePrimarySidebar}
+        />
+        <button
+          type="button"
+          class="app-sidebar-close"
+          aria-label={t`Close`}
+          onClick={closePrimarySidebar}
+        >
+          <Symbol size={24}>close</Symbol>
+        </button>
+      </Show>
       <ServerList
         orderedServers={state.ordering.orderedServers(client())}
         setServerOrder={state.ordering.setServerOrder}
@@ -53,12 +88,7 @@ export const Sidebar = (props: {
         }
         menuGenerator={props.menuGenerator}
       />
-      <Show
-        when={
-          state.layout.getSectionState(LAYOUT_SECTIONS.PRIMARY_SIDEBAR, true) &&
-          !location.pathname.startsWith("/discover")
-        }
-      >
+      <Show when={primarySidebarOpen()}>
         <Switch fallback={<Home />}>
           <Match when={params.server}>
             <Server />
