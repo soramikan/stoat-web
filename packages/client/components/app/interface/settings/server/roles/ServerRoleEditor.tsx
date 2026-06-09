@@ -199,9 +199,11 @@ export function ServerRoleEditor(props: { context: Server; roleId: string }) {
           />
 
           <Column>
-            <Text class="label">Hoist Role</Text>
+            <Text class="label">
+              <Trans>Hoist Role</Trans>
+            </Text>
             <Form2.Checkbox control={editGroup.controls.hoist}>
-              Display this role above others
+              <Trans>Display this role above others</Trans>
             </Form2.Checkbox>
           </Column>
 

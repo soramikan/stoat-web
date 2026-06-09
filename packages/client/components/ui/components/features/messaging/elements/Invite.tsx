@@ -69,13 +69,21 @@ export function Invite(props: Props) {
               : undefined}
           </Text>
           <Text class="label">
-            {query.data instanceof ServerPublicInvite
-              ? query.data.memberCount
-              : undefined}{" "}
-            members
+            <Trans>
+              {query.data instanceof ServerPublicInvite
+                ? query.data.memberCount
+                : undefined}{" "}
+              members
+            </Trans>
           </Text>
         </Column>
-        <Switch fallback={<Button onPress={() => join.mutate()}>Join</Button>}>
+        <Switch
+          fallback={
+            <Button onPress={() => join.mutate()}>
+              <Trans>Join</Trans>
+            </Button>
+          }
+        >
           <Match
             when={
               query.data instanceof ServerPublicInvite &&

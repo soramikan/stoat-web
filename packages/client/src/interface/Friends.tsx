@@ -170,7 +170,7 @@ export function Friends() {
               <Switch
                 fallback={
                   <People
-                    title="Online"
+                    title={<Trans>Online</Trans>}
                     users={lists().online}
                     scrollTargetElement={targetSignal}
                   />
@@ -178,26 +178,26 @@ export function Friends() {
               >
                 <Match when={page() === "all"}>
                   <People
-                    title="All"
+                    title={<Trans>All</Trans>}
                     users={lists().friends}
                     scrollTargetElement={targetSignal}
                   />
                 </Match>
                 <Match when={page() === "pending"}>
                   <People
-                    title="Incoming"
+                    title={<Trans>Incoming</Trans>}
                     users={lists().incoming}
                     scrollTargetElement={targetSignal}
                   />
                   <People
-                    title="Outgoing"
+                    title={<Trans>Outgoing</Trans>}
                     users={lists().outgoing}
                     scrollTargetElement={targetSignal}
                   />
                 </Match>
                 <Match when={page() === "blocked"}>
                   <People
-                    title="Blocked"
+                    title={<Trans>Blocked</Trans>}
                     users={lists().blocked}
                     scrollTargetElement={targetSignal}
                   />
@@ -216,7 +216,7 @@ export function Friends() {
  */
 function People(props: {
   users: User[];
-  title: string;
+  title: JSX.Element;
   scrollTargetElement: Accessor<HTMLDivElement>;
 }) {
   return (

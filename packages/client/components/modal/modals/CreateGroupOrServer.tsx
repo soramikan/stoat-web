@@ -17,10 +17,10 @@ export function CreateGroupOrServer(
     <Dialog
       show={props.show}
       onClose={props.onClose}
-      title="Create a group or server"
+      title={<Trans>Create a group or server</Trans>}
       actions={[
         {
-          text: "Group",
+          text: <Trans>Group</Trans>,
           onClick: () => {
             openModal({
               type: "create_group",
@@ -29,7 +29,7 @@ export function CreateGroupOrServer(
           },
         },
         {
-          text: "Server",
+          text: <Trans>Server</Trans>,
           onClick: () => {
             openModal({
               type: "create_server",

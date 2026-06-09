@@ -1,5 +1,6 @@
 import { Show } from "solid-js";
 
+import { Trans } from "@lingui-solid/solid/macro";
 import { useNavigate } from "@solidjs/router";
 import { ServerMember, User } from "stoat.js";
 import { styled } from "styled-system/jsx";
@@ -47,11 +48,13 @@ export function ProfileActions(props: {
   return (
     <Actions width={props.width}>
       <Show when={props.user.relationship === "None" && !props.user.bot}>
-        <Button onPress={() => props.user.addFriend()}>Add Friend</Button>
+        <Button onPress={() => props.user.addFriend()}>
+          <Trans>Add Friend</Trans>
+        </Button>
       </Show>
       <Show when={props.user.relationship === "Incoming"}>
         <Button onPress={() => props.user.addFriend()}>
-          Accept friend request
+          <Trans>Accept friend request</Trans>
         </Button>
         <IconButton onPress={() => props.user.removeFriend()}>
           <MdCancel />
@@ -59,11 +62,13 @@ export function ProfileActions(props: {
       </Show>
       <Show when={props.user.relationship === "Outgoing"}>
         <Button onPress={() => props.user.removeFriend()}>
-          Cancel friend request
+          <Trans>Cancel friend request</Trans>
         </Button>
       </Show>
       <Show when={props.user.relationship === "Friend"}>
-        <Button onPress={openDm}>Message</Button>
+        <Button onPress={openDm}>
+          <Trans>Message</Trans>
+        </Button>
       </Show>
 
       <Show

@@ -15,6 +15,7 @@ import {
 import { Portal } from "solid-js/web";
 import { Motion, Presence } from "solid-motionone";
 
+import { Trans } from "@lingui-solid/solid/macro";
 import { flip, offset, shift } from "@floating-ui/dom";
 import { cva } from "styled-system/css";
 import { styled } from "styled-system/jsx";
@@ -126,18 +127,18 @@ function Picker(
             onPress={() => props.setShow("gif")}
             group="connected-start"
           >
-            GIFs
+            <Trans>GIFs</Trans>
           </Button>
           <Button
             groupActive={props.show() === "emoji"}
             onPress={() => props.setShow("emoji")}
             group="connected-end"
           >
-            Emoji
+            <Trans>Emoji</Trans>
           </Button>
         </Row>
 
-        <Switch fallback={<span>Not available yet.</span>}>
+        <Switch fallback={<Trans>Not available yet.</Trans>}>
           <Match when={props.show() === "gif"}>
             <GifPicker />
           </Match>

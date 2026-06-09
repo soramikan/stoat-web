@@ -7,6 +7,7 @@ import {
   useContext,
 } from "solid-js";
 
+import { useLingui } from "@lingui-solid/solid/macro";
 import { VirtualContainer } from "@minht11/solid-virtual-container";
 import { Emoji, Server } from "stoat.js";
 import { cva } from "styled-system/css";
@@ -66,6 +67,7 @@ type Item =
 const COLUMNS = 10;
 
 export function EmojiPicker() {
+  const { t } = useLingui();
   const client = useClient();
   const state = useState();
 
@@ -119,7 +121,7 @@ export function EmojiPicker() {
 
     items.push({
       t: 3,
-      title: "Default",
+      title: t`Default`,
     });
 
     while (items.length % COLUMNS) {
@@ -142,7 +144,7 @@ export function EmojiPicker() {
       <TextField
         autoFocus
         variant="filled"
-        placeholder="Search for emojis..."
+        placeholder={t`Search for emojis...`}
         value={filter()}
         onMouseDown={(e) => {
           e.preventDefault();

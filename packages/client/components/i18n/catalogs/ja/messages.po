@@ -49,7 +49,7 @@ msgstr "{0, plural, one {ブロックされたメッセージ # 件} other {ブ�
 
 #: src/interface/navigation/channels/HomeSidebar.tsx
 #~ msgid "{0, plural, one {# Member} other {# Members}}"
-#~ msgstr ""
+#~ msgstr "{0, plural, one {# 人のメンバー} other {# 人のメンバー}}"
 
 #. placeholder {0}: items().length
 #: components/ui/components/utils/files/FileDropAnywhereCollector.tsx
@@ -97,11 +97,16 @@ msgstr "{0} が参加しました"
 msgid "{0} left"
 msgstr "{0} が退出しました"
 
-#. placeholder {0}: (message.systemMessage as ChannelOwnershipChangeSystemMessage).from?.username
-#. placeholder {1}: (message.systemMessage as ChannelOwnershipChangeSystemMessage).to?.username
+#. placeholder {0}: (message.systemMessage as ChannelOwnershipChangeSystemMessage).from ?.username
+#. placeholder {1}: (message.systemMessage as ChannelOwnershipChangeSystemMessage).to ?.username
 #: components/client/NotificationsWorker.tsx
 msgid "{0} made {1} the new group owner"
 msgstr "{0} が {1} を新しいグループ所有者にしました"
+
+#. placeholder {0}: query.data instanceof ServerPublicInvite ? query.data.memberCount : undefined
+#: components/ui/components/features/messaging/elements/Invite.tsx
+msgid "{0} members"
+msgstr "{0} 人のメンバー"
 
 #. placeholder {0}: (message.systemMessage as MessagePinnedSystemMessage).by?.username
 #: components/client/NotificationsWorker.tsx
@@ -151,6 +156,20 @@ msgstr "{2} 件中 {0}-{1}"
 #: components/modal/modals/UserProfileRoles.tsx
 msgid "{0}'s roles"
 msgstr "{0} のロール"
+
+#: src/interface/channels/text/Composition.tsx
+#: src/interface/channels/text/Composition.tsx
+msgid "{h} hours"
+msgstr "{h} 時間"
+
+#: src/interface/channels/text/Composition.tsx
+#: src/interface/channels/text/Composition.tsx
+msgid "{m} minutes"
+msgstr "{m} 分"
+
+#: src/interface/channels/text/Composition.tsx
+msgid "{sec} seconds"
+msgstr "{sec} 秒"
 
 #: components/ui/components/features/messaging/elements/Reactions.tsx
 msgid "{unknown} reacted"
@@ -233,17 +252,42 @@ msgstr "<0>注意してください！</0><1/>これは表示されていたリ�
 msgid "1 day"
 msgstr "1日"
 
+#: src/interface/channels/text/Composition.tsx
+#: src/interface/channels/text/Composition.tsx
 #: components/modal/modals/BanMember.tsx
+#: components/app/interface/settings/channel/Overview.tsx
 msgid "1 hour"
 msgstr "1時間"
+
+#: src/interface/channels/text/Composition.tsx
+#: src/interface/channels/text/Composition.tsx
+#: components/app/interface/settings/channel/Overview.tsx
+msgid "1 minute"
+msgstr "1 分"
 
 #: components/ui/components/features/messaging/elements/Reactions.tsx
 msgid "1 person reacted"
 msgstr "一人が反応しました"
 
+#: src/interface/channels/text/Composition.tsx
+msgid "1 second"
+msgstr "1 秒"
+
+#: components/app/interface/settings/channel/Overview.tsx
+msgid "10 minutes"
+msgstr "10 分"
+
+#: components/app/interface/settings/channel/Overview.tsx
+msgid "10 seconds"
+msgstr "10 秒"
+
 #: components/app/interface/settings/user/Language.tsx
 msgid "12 hours"
 msgstr "12時間"
+
+#: components/app/interface/settings/channel/Overview.tsx
+msgid "2 hours"
+msgstr "2 時間"
 
 #: components/app/interface/settings/user/Language.tsx
 msgid "24 hours"
@@ -253,7 +297,24 @@ msgstr "24時間"
 msgid "3 days"
 msgstr "3日"
 
+#: components/app/interface/settings/channel/Overview.tsx
+msgid "30 minutes"
+msgstr "30 分"
+
+#: components/app/interface/settings/channel/Overview.tsx
+msgid "30 seconds"
+msgstr "30 秒"
+
+#: components/app/interface/settings/channel/Overview.tsx
+msgid "5 minutes"
+msgstr "5 分"
+
+#: components/app/interface/settings/channel/Overview.tsx
+msgid "5 seconds"
+msgstr "5 秒"
+
 #: components/modal/modals/BanMember.tsx
+#: components/app/interface/settings/channel/Overview.tsx
 msgid "6 hours"
 msgstr "6時間"
 
@@ -282,6 +343,7 @@ msgstr "概要"
 msgid "Accept"
 msgstr "承認"
 
+#: components/ui/components/features/profiles/ProfileActions.tsx
 #: components/app/menus/UserContextMenu.tsx
 msgid "Accept friend request"
 msgstr "フレンド申請を承認"
@@ -303,6 +365,10 @@ msgstr "新しいフレンドを追加"
 #: components/app/menus/UserContextMenu.tsx
 msgid "Add friend"
 msgstr "友達に追加"
+
+#: components/ui/components/features/profiles/ProfileActions.tsx
+msgid "Add Friend"
+msgstr "フレンドを追加"
 
 #: src/interface/channels/ChannelHeader.tsx
 #: components/modal/modals/AddMembersToGroup.tsx
@@ -337,6 +403,7 @@ msgstr "アドバンス"
 msgid "Affects all roles and users"
 msgstr "すべてのロールとユーザーに影響します"
 
+#: src/interface/Friends.tsx
 #: src/interface/Friends.tsx
 msgid "All"
 msgstr "すべて"
@@ -395,7 +462,7 @@ msgstr "移動してもよろしいですか: "
 
 #: components/modal/modals/LinkWarning.tsx
 #~ msgid "Are you sure you want to go to <0>{0}</0>?"
-#~ msgstr ""
+#~ msgstr "<0>{0}</0> に移動してもよろしいですか？"
 
 #. placeholder {0}: props.user?.displayName ?? props.user.username
 #. placeholder {1}: props.group.name
@@ -410,6 +477,10 @@ msgstr "下位メンバーに下位ロールを割り当てる"
 #: components/app/interface/settings/channel/permissions/ChannelPermissionsEditor.tsx
 msgid "Assign Roles"
 msgstr "ロールを付与する"
+
+#: components/modal/modals/ScreenShareSettings.tsx
+msgid "Audio disabled by browser"
+msgstr "ブラウザにより音声が無効化されています"
 
 #: components/modal/modals/MFAFlow.tsx
 #: components/modal/modals/MFAFlow.tsx
@@ -484,6 +555,7 @@ msgid "Block user"
 msgstr "ユーザーのブロック"
 
 #: src/interface/Friends.tsx
+#: src/interface/Friends.tsx
 msgid "Blocked"
 msgstr "ブロック"
 
@@ -505,7 +577,7 @@ msgstr "ブラウザのエコーキャンセル"
 
 #: components/app/interface/settings/user/voice/VoiceProcessingOptions.tsx
 #~ msgid "Browser Noise Supression"
-#~ msgstr ""
+#~ msgstr "ブラウザのノイズ抑制"
 
 #: components/app/interface/settings/user/Feedback.tsx
 msgid "Bug Tracker"
@@ -524,6 +596,15 @@ msgstr "このBotを作成することで、<0>適正利用ポリシー</0>に�
 #: components/modal/modals/CreateServer.tsx
 msgid "By creating this server, you agree to the <0>Acceptable Use Policy</0>."
 msgstr "このサーバーを作成することで、<0>適正利用ポリシー</0>に同意したものとみなされます。"
+
+#: components/app/interface/settings/channel/permissions/ChannelPermissionsEditor.tsx
+msgid "Bypass Slowmode"
+msgstr "低速モードを回避"
+
+#: components/app/interface/settings/channel/permissions/ChannelPermissionsEditor.tsx
+#: components/app/interface/settings/channel/permissions/ChannelPermissionsEditor.tsx
+msgid "Bypasses slowmode in channels"
+msgstr "チャンネルの低速モードを回避できます"
 
 #: components/modal/modals/SignOutSessions.tsx
 #: components/modal/modals/ServerIdentity.tsx
@@ -554,6 +635,7 @@ msgstr "このサーバーを作成することで、<0>適正利用ポリシー
 msgid "Cancel"
 msgstr "キャンセル"
 
+#: components/ui/components/features/profiles/ProfileActions.tsx
 #: components/app/menus/UserContextMenu.tsx
 msgid "Cancel friend request"
 msgstr "友達のリクエストをキャンセル"
@@ -618,7 +700,7 @@ msgstr "サーバーごとにプロフィールを変更"
 
 #: components/modal/modals/Changelog.tsx
 #~ msgid "Changelog"
-#~ msgstr ""
+#~ msgstr "変更履歴"
 
 #: components/app/interface/settings/channel/Overview.tsx
 msgid "Channel Description"
@@ -636,6 +718,10 @@ msgstr "チャンネル名"
 #: src/interface/channels/ChannelHeader.tsx
 msgid "Channel Settings"
 msgstr "チャンネル設定"
+
+#: components/app/interface/settings/channel/Overview.tsx
+msgid "Channel Slowmode"
+msgstr "チャンネルの低速モード"
 
 #: components/app/interface/settings/channel/permissions/ChannelPermissionsEditor.tsx
 msgid "Channels"
@@ -720,6 +806,11 @@ msgstr "{0} との会話を閉じますか？"
 #: components/modal/modals/JoinServer.tsx
 msgid "Code"
 msgstr "コード"
+
+#: components/ui/components/features/voice/callCard/VoiceCallCardActions.tsx
+#: components/ui/components/features/voice/callCard/VoiceCallCardActions.tsx
+msgid "Coming soon! 👀"
+msgstr "近日対応予定です！👀"
 
 #: components/app/interface/settings/user/Account.tsx
 msgid "Configure a way to get back into your account in case your 2FA is lost"
@@ -843,6 +934,7 @@ msgstr "要求されたものが見つかりませんでした。"
 #: components/modal/modals/CreateWebhook.tsx
 #: components/modal/modals/CreateServer.tsx
 #: components/modal/modals/CreateRole.tsx
+#: components/modal/modals/CreateOrJoinServer.tsx
 #: components/modal/modals/CreateGroup.tsx
 #: components/modal/modals/CreateChannel.tsx
 #: components/modal/modals/CreateCategory.tsx
@@ -860,6 +952,7 @@ msgstr "他のユーザーを招待する前にチャンネルを作成してく
 #~ msgstr "グループの作成"
 
 #: src/interface/Home.tsx
+#: components/modal/modals/CreateGroupOrServer.tsx
 msgid "Create a group or server"
 msgstr "グループまたはサーバーを作成"
 
@@ -927,6 +1020,10 @@ msgstr "招待を作成"
 msgid "Create invites for others to use"
 msgstr "他のユーザーが使う招待を作成"
 
+#: components/modal/modals/CreateOrJoinServer.tsx
+msgid "Create or join a server"
+msgstr "サーバーの作成または参加"
+
 #: components/modal/modals/CreateRole.tsx
 #: components/app/interface/settings/server/roles/ServerRoleOverview.tsx
 msgid "Create Role"
@@ -983,6 +1080,11 @@ msgstr "データベースエラーです。サポートにお問い合わせく
 msgid "Date format"
 msgstr "日付形式"
 
+#: components/ui/components/features/voice/callCard/VoiceCallCardActions.tsx
+#: components/app/interface/settings/user/notifications/Sounds.tsx
+msgid "Deafen"
+msgstr "スピーカーミュート"
+
 #: components/app/interface/settings/channel/permissions/ChannelPermissionsEditor.tsx
 #: components/app/interface/settings/channel/permissions/ChannelPermissionsEditor.tsx
 msgid "Deafen lower-ranking members in voice call"
@@ -992,6 +1094,7 @@ msgstr "音声通話で下位メンバーをスピーカーミュートする"
 msgid "Deafen Members"
 msgstr "メンバーを聞こえなくする"
 
+#: components/ui/components/features/messaging/composition/picker/EmojiPicker.tsx
 #: components/app/menus/shared/NotificationContextMenu.tsx
 msgid "Default"
 msgstr "デフォルト"
@@ -1002,6 +1105,10 @@ msgstr "デフォルト"
 #: components/app/interface/settings/channel/permissions/ChannelPermissionsOverview.tsx
 msgid "Default Permissions"
 msgstr "デフォルト権限"
+
+#: components/ui/components/features/voice/callCard/VoiceCallCardActions.tsx
+#~ msgid "Defean"
+#~ msgstr "スピーカーミュート"
 
 #: components/modal/modals/EmojiPreview.tsx
 #: components/modal/modals/DeleteServer.tsx
@@ -1121,6 +1228,10 @@ msgstr "表示とテキスト"
 msgid "Display Name"
 msgstr "表示名"
 
+#: components/app/interface/settings/server/roles/ServerRoleEditor.tsx
+msgid "Display this role above others"
+msgstr "このロールを他より上に表示"
+
 #: src/interface/navigation/servers/UserMenu.tsx
 msgid "Do Not Disturb"
 msgstr "取り込み中"
@@ -1135,7 +1246,7 @@ msgstr "今後確認しない: "
 
 #: components/modal/modals/LinkWarning.tsx
 #~ msgid "Don't ask me again for <0>{0}</0>"
-#~ msgstr ""
+#~ msgstr "<0>{0}</0> について今後確認しない"
 
 #: components/modal/modals/BanMember.tsx
 msgid "Don't delete messages"
@@ -1230,6 +1341,10 @@ msgstr "有効: <0/> (<1/>)"
 msgid "Email"
 msgstr "メールアドレス"
 
+#: components/ui/components/features/messaging/composition/picker/CompositionMediaPicker.tsx
+msgid "Emoji"
+msgstr "絵文字"
+
 #: components/app/interface/settings/server/emojis/EmojiList.tsx
 msgid "Emoji Name"
 msgstr "絵文字名"
@@ -1250,13 +1365,21 @@ msgstr "認証アプリを有効化"
 msgid "Enable authenticator app"
 msgstr "認証アプリを使えるようにする"
 
-#: components/app/interface/settings/user/Notifications.tsx
+#: components/app/interface/settings/user/notifications/Notifications.tsx
 msgid "Enable Desktop Notifications"
 msgstr "デスクトップ通知を有効にする"
+
+#: components/app/interface/settings/user/notifications/Notifications.tsx
+msgid "Enable Push Notifications"
+msgstr "プッシュ通知を有効にする"
 
 #: components/app/interface/settings/user/appearance/AppearanceMenu.tsx
 msgid "Enable transparency glass/blur effects (slow on older machines)"
 msgstr "透明ガラス/ぼかし効果を有効化 (古いマシンでは低速)"
+
+#: components/ui/components/features/voice/callCard/VoiceCallCardActions.tsx
+msgid "End call"
+msgstr "通話を終了"
 
 #: components/app/interface/settings/user/voice/VoiceProcessingOptions.tsx
 msgid "Enhanced"
@@ -1312,6 +1435,14 @@ msgstr "恐喝または脅迫"
 #: components/modal/modals/ReportContent.tsx
 msgid "Extreme violence, gore or animal cruelty"
 msgstr "過度な暴力、流血表現、または動物虐待"
+
+#: components/client/NotificationsController.ts
+msgid "Failed to enable notifications. Stoat does not have notification permission."
+msgstr "通知を有効にできませんでした。Stoat に通知権限がありません。"
+
+#: components/client/NotificationsController.ts
+msgid "Failed to enable push notifications. Please try again later."
+msgstr "プッシュ通知を有効にできませんでした。後でもう一度お試しください。"
 
 #: components/i18n/errors.ts
 msgid "Failed to process the image you provided."
@@ -1399,6 +1530,10 @@ msgstr "新しいリカバリコード一式を取得"
 msgid "Get active recovery codes"
 msgstr "有効なリカバリコードを取得"
 
+#: components/ui/components/features/messaging/composition/picker/CompositionMediaPicker.tsx
+msgid "GIFs"
+msgstr "GIF"
+
 #: src/interface/Home.tsx
 msgid "Give feedback on Stoat"
 msgstr "Stoatにフィードバックを送る"
@@ -1444,6 +1579,10 @@ msgstr "良好"
 msgid "Grants {0} permissions and denies {1} permissions"
 msgstr "{0} 件の権限を許可し、{1} 件の権限を拒否します"
 
+#: components/modal/modals/CreateGroupOrServer.tsx
+msgid "Group"
+msgstr "グループ"
+
 #: components/modal/modals/CreateGroup.tsx
 msgid "Group Name"
 msgstr "グループ名"
@@ -1486,6 +1625,10 @@ msgstr "他を非表示"
 msgid "High Contrast"
 msgstr "高コントラスト"
 
+#: components/app/interface/settings/server/roles/ServerRoleEditor.tsx
+msgid "Hoist Role"
+msgstr "ロールを上部に表示"
+
 #: src/interface/Home.tsx
 #: src/interface/navigation/channels/HomeSidebar.tsx
 msgid "Home"
@@ -1521,6 +1664,10 @@ msgstr "画像: @fakurian"
 #: components/modal/modals/ReportContent.tsx
 msgid "Impersonation"
 msgstr "なりすまし"
+
+#: src/interface/Friends.tsx
+msgid "Incoming"
+msgstr "受信したリクエスト"
 
 #: components/app/interface/settings/user/Native.tsx
 msgid "Instead of closing, Stoat will hide in your tray."
@@ -1575,8 +1722,10 @@ msgstr "無関係なジョークバッジ 2"
 msgid "ISO Standard (YYYY-MM-DD)"
 msgstr "ISO標準 (YYYY-MM-DD)"
 
+#: components/ui/components/features/messaging/elements/Invite.tsx
 #: components/modal/modals/JoinServer.tsx
 #: components/modal/modals/Invite.tsx
+#: components/modal/modals/CreateOrJoinServer.tsx
 msgid "Join"
 msgstr "参加"
 
@@ -1586,13 +1735,14 @@ msgstr "サーバーに参加"
 
 #: src/interface/channels/ChannelHeader.tsx
 #~ msgid "Join call"
-#~ msgstr ""
+#~ msgstr "通話に参加"
 
 #: src/interface/Home.tsx
 #: components/app/interface/settings/user/Feedback.tsx
 msgid "Join the Stoat Lounge"
 msgstr "Stoat Loungeに参加"
 
+#: src/interface/channels/ChannelHeader.tsx
 #: components/ui/components/features/voice/callCard/VoiceCallCardPreview.tsx
 msgid "Join the voice channel"
 msgstr "音声チャンネルに参加"
@@ -1687,6 +1837,7 @@ msgstr "私たちのアプリをどのように改善するか、フィードバ
 msgid "Light"
 msgstr "ライト"
 
+#: components/ui/components/features/voice/callCard/VoiceCallCardActions.tsx
 #: components/app/interface/settings/channel/permissions/ChannelPermissionsEditor.tsx
 msgid "Listen"
 msgstr "聞く"
@@ -1789,6 +1940,11 @@ msgstr "マスカレード"
 msgid "Members"
 msgstr "メンバー"
 
+#. placeholder {0}: slowmodeWaitTime()
+#: src/interface/channels/text/Composition.tsx
+msgid "Members can send one message every {0}."
+msgstr "メンバーは {0} ごとに 1 件のメッセージを送信できます。"
+
 #: components/app/menus/UserContextMenu.tsx
 msgid "Mention"
 msgstr "言及"
@@ -1819,6 +1975,7 @@ msgstr "メンション"
 msgid "Mentions Only"
 msgstr "メンションのみ"
 
+#: components/ui/components/features/profiles/ProfileActions.tsx
 #: components/app/menus/UserContextMenu.tsx
 msgid "Message"
 msgstr "メッセージ"
@@ -1838,11 +1995,11 @@ msgstr "メッセージグループの間隔"
 msgid "Message not loaded, click to jump"
 msgstr "メッセージが読み込まれていません、クリックするとジャンプします"
 
-#: components/app/interface/settings/user/Notifications.tsx
+#: components/app/interface/settings/user/notifications/Sounds.tsx
 msgid "Message Received"
 msgstr "メッセージ受信"
 
-#: components/app/interface/settings/user/Notifications.tsx
+#: components/app/interface/settings/user/notifications/Sounds.tsx
 msgid "Message Sent"
 msgstr "メッセージ送信"
 
@@ -1892,7 +2049,9 @@ msgstr "メンバーを音声チャンネル間で移動"
 msgid "Multi-factor authentication is already enabled for this account."
 msgstr "このアカウントでは多要素認証がすでに有効です。"
 
+#: components/ui/components/features/voice/callCard/VoiceCallCardActions.tsx
 #: components/app/menus/UserContextMenu.tsx
+#: components/app/interface/settings/user/notifications/Sounds.tsx
 msgid "Mute"
 msgstr "ミュート"
 
@@ -1908,6 +2067,10 @@ msgstr "音声通話で下位メンバーをミュートする"
 #: components/app/interface/settings/channel/permissions/ChannelPermissionsEditor.tsx
 msgid "Mute Members"
 msgstr "メンバーをミュート"
+
+#: components/app/menus/UserContextMenu.tsx
+msgid "Mute Screen Share"
+msgstr "画面共有をミュート"
 
 #: components/app/menus/ServerContextMenu.tsx
 msgid "Mute Server"
@@ -1992,12 +2155,17 @@ msgstr "なし"
 msgid "Normal"
 msgstr "標準"
 
+#: components/ui/components/features/messaging/composition/picker/CompositionMediaPicker.tsx
+msgid "Not available yet."
+msgstr "まだ利用できません。"
+
 #: components/modal/modals/ReportContent.tsx
 msgid "Not of minimum age to use the platform"
 msgstr "プラットフォームを利用できる最低年齢に達していません"
 
 #: components/app/menus/ServerContextMenu.tsx
 #: components/app/menus/shared/NotificationContextMenu.tsx
+#: components/app/interface/settings/UserSettings.tsx
 msgid "Notifications"
 msgstr "通知"
 
@@ -2047,6 +2215,7 @@ msgid "One of the first 1000 users!"
 msgstr "最初の1000人のユーザーの一人です！"
 
 #: src/interface/Friends.tsx
+#: src/interface/Friends.tsx
 #: src/interface/navigation/servers/UserMenu.tsx
 #: src/interface/navigation/channels/HomeSidebar.tsx
 #: src/interface/channels/text/MemberSidebar.tsx
@@ -2086,6 +2255,10 @@ msgstr "設定を開く"
 #: components/modal/modals/ReportContent.tsx
 msgid "Other"
 msgstr "その他"
+
+#: src/interface/Friends.tsx
+msgid "Outgoing"
+msgstr "送信したリクエスト"
 
 #: components/app/interface/settings/user/voice/VoiceInputOptions.tsx
 msgid "Output Volume"
@@ -2130,6 +2303,10 @@ msgstr "メッセージをピン留め"
 #: components/ui/components/features/profiles/ProfileBadges.tsx
 msgid "Platform Moderator"
 msgstr "プラットフォームモデレーター"
+
+#: components/app/interface/settings/user/notifications/Sounds.tsx
+msgid "Play sound"
+msgstr "サウンドを再生"
 
 #: components/modal/modals/MFAFlow.tsx
 msgid "Please confirm this action using the selected method."
@@ -2206,7 +2383,7 @@ msgstr "メッセージ履歴を閲覧"
 
 #: components/modal/modals/Changelog.tsx
 #~ msgid "Read More"
-#~ msgstr ""
+#~ msgstr "続きを読む"
 
 #: components/app/interface/settings/channel/permissions/ChannelPermissionsEditor.tsx
 msgid "Read past messages sent in channel"
@@ -2226,9 +2403,17 @@ msgstr "理由"
 msgid "Reason for report"
 msgstr "通報理由"
 
-#: components/app/interface/settings/user/Notifications.tsx
+#: components/app/interface/settings/user/notifications/Notifications.tsx
 msgid "Receive notifications while the app is open and in the background."
 msgstr "アプリが開いている間とバックグラウンド中に通知を受け取ります。"
+
+#: components/app/interface/settings/user/notifications/Notifications.tsx
+msgid "Receive notifications while the tab is open."
+msgstr "タブが開いている間に通知を受け取ります。"
+
+#: components/app/interface/settings/user/notifications/Notifications.tsx
+msgid "Receive push notifications while the app is closed."
+msgstr "アプリが閉じている間にプッシュ通知を受け取ります。"
 
 #: components/ui/components/features/voice/callCard/VoiceCallCardStatus.tsx
 msgid "Reconnecting"
@@ -2355,6 +2540,7 @@ msgstr "認証コードを再送信する"
 #: components/modal/modals/MFARecovery.tsx
 #: components/auth/src/flows/FlowReset.tsx
 #: components/auth/src/flows/FlowConfirmReset.tsx
+#: components/app/interface/settings/channel/permissions/ChannelPermissionsEditor.tsx
 msgid "Reset"
 msgstr "元に戻す"
 
@@ -2385,6 +2571,10 @@ msgstr "責任ある開示が行われたセキュリティ問題"
 msgid "Retry sending"
 msgstr "送信を再試行"
 
+#: components/ui/components/features/voice/callCard/VoiceCallCardActions.tsx
+msgid "Return to voice channel"
+msgstr "音声チャンネルに戻る"
+
 #: components/modal/modals/ReportContent.tsx
 msgid "Revenge or underage pornography"
 msgstr "リベンジポルノまたは未成年のポルノ"
@@ -2395,7 +2585,7 @@ msgstr "ポリシー変更を確認"
 
 #: components/app/interface/settings/user/Feedback.tsx
 #~ msgid "Roadmap"
-#~ msgstr ""
+#~ msgstr "ロードマップ"
 
 #: components/app/interface/settings/server/roles/ServerRoleEditor.tsx
 msgid "Role Icon"
@@ -2405,6 +2595,10 @@ msgstr "ロールアイコン"
 #: components/app/interface/settings/server/roles/ServerRoleEditor.tsx
 msgid "Role Name"
 msgstr "ロール名"
+
+#: components/app/interface/settings/channel/permissions/ChannelPermissionsOverview.tsx
+msgid "Role Permissions"
+msgstr "ロール権限"
 
 #: components/ui/components/features/profiles/ProfileRoles.tsx
 #: components/app/interface/settings/ServerSettings.tsx
@@ -2425,6 +2619,10 @@ msgstr "保存"
 msgid "Save file"
 msgstr "ファイルを保存"
 
+#: components/app/interface/settings/channel/permissions/ChannelPermissionsEditor.tsx
+msgid "Save permissions"
+msgstr "権限を保存"
+
 #: src/interface/channels/text/Composition.tsx
 msgid "Save to your notes"
 msgstr "ノートに保存"
@@ -2444,6 +2642,18 @@ msgstr "詐欺または不正行為"
 msgid "Screen Share Settings"
 msgstr "画面共有設定"
 
+#: components/app/menus/UserContextMenu.tsx
+msgid "Screen Share Volume"
+msgstr "画面共有の音量"
+
+#: components/ui/components/features/messaging/composition/picker/EmojiPicker.tsx
+msgid "Search for emojis..."
+msgstr "絵文字を検索..."
+
+#: components/ui/components/features/messaging/composition/picker/GifPicker.tsx
+msgid "Search for GIFs..."
+msgstr "GIFを検索..."
+
 #: components/modal/modals/AddBot.tsx
 msgid "Search for groups..."
 msgstr "グループを検索..."
@@ -2453,9 +2663,13 @@ msgstr "グループを検索..."
 msgid "Search for users..."
 msgstr "ユーザーを検索..."
 
+#: src/interface/channels/ChannelHeader.tsx
+msgid "Search messages..."
+msgstr "メッセージを検索..."
+
 #: components/app/interface/settings/user/Feedback.tsx
 #~ msgid "See what we're currently working on."
-#~ msgstr ""
+#~ msgstr "現在取り組んでいる内容を見る。"
 
 #: components/app/interface/settings/user/voice/VoiceInputOptions.tsx
 msgid "Select audio input"
@@ -2476,6 +2690,10 @@ msgstr "ノイズ抑制を選択"
 #: components/app/interface/settings/user/voice/ScreenShareOptions.tsx
 msgid "Select screen share quality"
 msgstr "画面共有品質を選択"
+
+#: components/app/interface/settings/user/voice/VoiceInputOptions.tsx
+msgid "Select video input"
+msgstr "ビデオ入力を選択"
 
 #: components/app/interface/settings/user/Language.tsx
 msgid "Select your language"
@@ -2537,6 +2755,10 @@ msgstr "添付ファイルが送信されました"
 msgid "Sent multiple attachments"
 msgstr "複数の添付ファイルが送信されました"
 
+#: components/modal/modals/CreateGroupOrServer.tsx
+msgid "Server"
+msgstr "サーバー"
+
 #: components/modal/modals/ServerIdentity.tsx
 msgid "Server Avatar"
 msgstr "サーバーアバター"
@@ -2594,10 +2816,19 @@ msgstr "リカバリコードを設定"
 msgid "Several people are typing…"
 msgstr "複数人が入力中…"
 
+#: components/modal/modals/ScreenShareSettings.tsx
+#: components/modal/modals/ScreenSharePicker.tsx
+msgid "Share audio"
+msgstr "音声を共有"
+
 #: components/app/interface/settings/channel/permissions/ChannelPermissionsEditor.tsx
 #: components/app/interface/settings/channel/permissions/ChannelPermissionsEditor.tsx
 msgid "Share camera or screen in voice call"
 msgstr "音声通話でカメラまたは画面を共有"
+
+#: components/ui/components/features/voice/callCard/VoiceCallCardActions.tsx
+msgid "Share screen"
+msgstr "画面を共有"
 
 #: components/app/interface/settings/user/Native.tsx
 msgid "Show corrections and suggestions as you type."
@@ -2623,6 +2854,18 @@ msgstr "サインアップ"
 msgid "Silent"
 msgstr "サイレント"
 
+#: src/interface/channels/text/Composition.tsx
+msgid "Slowmode Immune"
+msgstr "低速モードの対象外"
+
+#: src/interface/channels/text/Composition.tsx
+msgid "Slowmode is enabled."
+msgstr "低速モードが有効です。"
+
+#: components/app/interface/settings/channel/Overview.tsx
+msgid "Slowmode off"
+msgstr "低速モードなし"
+
 #: components/modal/modals/EditEmail.tsx
 msgid "someone@example.com"
 msgstr "someone@example.com"
@@ -2642,9 +2885,9 @@ msgstr "問題が発生しました！ {error}"
 
 #: components/i18n/errors.ts
 #~ msgid "Something went wrong! Try again later."
-#~ msgstr ""
+#~ msgstr "問題が発生しました。後でもう一度お試しください。"
 
-#: components/app/interface/settings/user/Notifications.tsx
+#: components/app/interface/settings/user/notifications/Sounds.tsx
 msgid "Sounds"
 msgstr "サウンド"
 
@@ -2664,6 +2907,10 @@ msgstr "発言する"
 msgid "Spellchecker"
 msgstr "スペルチェッカー"
 
+#: components/ui/components/features/voice/callCard/VoiceCallCardActions.tsx
+msgid "Start camera"
+msgstr "カメラを開始"
+
 #: components/app/interface/settings/user/Native.tsx
 msgid "Start Minimised to Tray"
 msgstr "トレイに最小化して起動"
@@ -2682,7 +2929,7 @@ msgstr "ステータス"
 
 #: components/app/interface/settings/user/Native.tsx
 #~ msgid "Stoat Desktop"
-#~ msgstr ""
+#~ msgstr "Stoat デスクトップ"
 
 #: components/ui/components/features/profiles/ProfileBadges.tsx
 msgid "Stoat Developer"
@@ -2703,6 +2950,22 @@ msgstr "Stoatは、いつでもどこでも友達やコミュニティとつな�
 #: components/app/interface/settings/user/Native.tsx
 msgid "Stoat will start in the system tray."
 msgstr "Stoatはシステムトレイで起動します。"
+
+#: components/ui/components/features/voice/callCard/VoiceCallCardActions.tsx
+msgid "Stop camera"
+msgstr "カメラを停止"
+
+#: components/ui/components/features/voice/callCard/VoiceCallCardActions.tsx
+msgid "Stop sharing"
+msgstr "共有を停止"
+
+#: components/app/interface/settings/user/notifications/Sounds.tsx
+msgid "Stream End"
+msgstr "配信終了"
+
+#: components/app/interface/settings/user/notifications/Sounds.tsx
+msgid "Stream Start"
+msgstr "配信開始"
 
 #: components/app/interface/settings/user/Feedback.tsx
 msgid "Submit feature suggestion"
@@ -2915,6 +3178,10 @@ msgstr "ユーザーのブロック解除"
 msgid "Uncaught Stoat error: {0}"
 msgstr "捕捉されなかったStoatエラー: {0}"
 
+#: components/app/interface/settings/user/notifications/Sounds.tsx
+msgid "Undeafen"
+msgstr "スピーカーミュート解除"
+
 #: components/markdown/plugins/anchors.tsx
 msgid "Unknown Server"
 msgstr "不明なサーバー"
@@ -2930,6 +3197,11 @@ msgstr "成人向けマークを解除"
 #: components/modal/modals/ChannelToggleMature.tsx
 msgid "Unmark this channel as mature?"
 msgstr "このチャンネルの成人向けマークを解除しますか？"
+
+#: components/ui/components/features/voice/callCard/VoiceCallCardActions.tsx
+#: components/app/interface/settings/user/notifications/Sounds.tsx
+msgid "Unmute"
+msgstr "ミュート解除"
 
 #: components/app/menus/shared/NotificationContextMenu.tsx
 msgid "Unmute Channel"
@@ -2955,6 +3227,10 @@ msgstr "望まない広告またはスパム"
 #: components/app/menus/shared/NotificationContextMenu.tsx
 msgid "Until I turn it back on"
 msgstr "再びオンにするまで"
+
+#: components/app/interface/settings/channel/permissions/ChannelPermissionsOverview.tsx
+msgid "Unused Roles"
+msgstr "未使用のロール"
 
 #: components/app/interface/settings/channel/permissions/ChannelPermissionsEditor.tsx
 msgid "Upload Files"
@@ -2985,7 +3261,7 @@ msgstr "ユーザーが特定のルールに違反しました…"
 msgid "User Joined"
 msgstr "ユーザーが参加しました"
 
-#: components/app/interface/settings/user/Notifications.tsx
+#: components/app/interface/settings/user/notifications/Sounds.tsx
 msgid "User Joined Call"
 msgstr "ユーザーが通話に参加"
 
@@ -2997,7 +3273,7 @@ msgstr "ユーザーがキックされました"
 msgid "User Left"
 msgstr "ユーザーが退出しました"
 
-#: components/app/interface/settings/user/Notifications.tsx
+#: components/app/interface/settings/user/notifications/Sounds.tsx
 msgid "User Left Call"
 msgstr "ユーザーが通話から退出"
 
@@ -3040,11 +3316,11 @@ msgstr "ユーザーはこのチャンネルに参加する前に年齢確認を
 
 #: components/app/interface/settings/user/voice/VoiceInputOptions.tsx
 #~ msgid "Using default microphone"
-#~ msgstr ""
+#~ msgstr "デフォルトのマイクを使用中"
 
 #: components/app/interface/settings/user/voice/VoiceInputOptions.tsx
 #~ msgid "Using default speaker"
-#~ msgstr ""
+#~ msgstr "デフォルトのスピーカーを使用中"
 
 #: src/interface/navigation/channels/ServerSidebar.tsx
 msgid "Verified"

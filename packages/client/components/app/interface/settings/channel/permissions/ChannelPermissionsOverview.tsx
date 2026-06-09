@@ -59,7 +59,9 @@ export function ChannelPermissionsOverview(props: { context: Channel }) {
       </CategoryButton>
 
       <Column gap="sm">
-        <Text class="label">Role Permissions</Text>
+        <Text class="label">
+          <Trans>Role Permissions</Trans>
+        </Text>
         <For each={roles().active}>
           {(role) => (
             <CategoryButton
@@ -89,7 +91,9 @@ export function ChannelPermissionsOverview(props: { context: Channel }) {
       </Column>
 
       <Column gap="sm">
-        <Text class="label">Unused Roles</Text>
+        <Text class="label">
+          <Trans>Unused Roles</Trans>
+        </Text>
         <For each={roles().unused}>
           {(role) => (
             <CategoryButton
