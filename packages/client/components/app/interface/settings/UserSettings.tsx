@@ -13,6 +13,7 @@ import { ColouredText, Column, Text, iconSize } from "@revolt/ui";
 import { Symbol } from "@revolt/ui/components/utils/Symbol";
 
 import MdAccountCircle from "@material-design-icons/svg/outlined/account_circle.svg?component-solid";
+import MdAdminPanelSettings from "@material-design-icons/svg/outlined/admin_panel_settings.svg?component-solid";
 import MdCampaign from "@material-design-icons/svg/outlined/campaign.svg?component-solid";
 import MdCoffee from "@material-design-icons/svg/outlined/coffee.svg?component-solid";
 import MdLanguage from "@material-design-icons/svg/outlined/language.svg?component-solid";
@@ -32,6 +33,7 @@ import pkg from "../../../../../../package.json";
 import { SettingsConfiguration } from ".";
 import { AccountCard } from "./user/_AccountCard";
 import { MyAccount } from "./user/Account";
+import AdminPanel from "./user/AdminPanel";
 import AdvancedSettings from "./user/Advanced";
 import { AppearanceMenu } from "./user/appearance";
 import { MyBots, ViewBot } from "./user/bots";
@@ -82,6 +84,8 @@ const Config: SettingsConfiguration<{ server: Server }> = {
         return <AppearanceMenu />;
       case "advanced":
         return <AdvancedSettings />;
+      case "admin":
+        return <AdminPanel />;
       case "profile":
         return <EditProfile />;
       case "sessions":
@@ -185,6 +189,11 @@ const Config: SettingsConfiguration<{ server: Server }> = {
               id: "feedback",
               icon: <MdRateReview {...iconSize(20)} />,
               title: <Trans>Feedback</Trans>,
+            },
+            {
+              id: "admin",
+              icon: <MdAdminPanelSettings {...iconSize(20)} />,
+              title: <Trans>Admin Panel</Trans>,
             },
           ],
         },
