@@ -3,7 +3,7 @@ import MdContentCopy from "@material-design-icons/svg/outlined/content_copy.svg?
 import MdDelete from "@material-design-icons/svg/outlined/delete.svg?component-solid";
 import MDPalette from "@material-design-icons/svg/outlined/palette.svg?component-solid";
 import { useClient } from "@revolt/client";
-import { CONFIGURATION } from "@revolt/common";
+import { uploadFileToAutumn } from "@revolt/common";
 import { useModals } from "@revolt/modal";
 import {
   Button,
@@ -62,10 +62,10 @@ export function ServerRoleEditor(props: { context: Server; roleId: string }) {
       if (!editGroup.controls.icon.value) {
         changes.remove!.push("Icon");
       } else if (Array.isArray(editGroup.controls.icon.value)) {
-        changes.icon = await client().uploadFile(
+        changes.icon = await uploadFileToAutumn(
+          client(),
           "icons",
           editGroup.controls.icon.value[0],
-          CONFIGURATION.DEFAULT_MEDIA_URL,
         );
       }
     }

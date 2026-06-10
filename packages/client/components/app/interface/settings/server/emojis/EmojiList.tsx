@@ -6,7 +6,7 @@ import { Server } from "stoat.js";
 import { css } from "styled-system/css";
 
 import { useClient } from "@revolt/client";
-import { CONFIGURATION } from "@revolt/common";
+import { CONFIGURATION, uploadFileToAutumn } from "@revolt/common";
 import { useError } from "@revolt/i18n";
 import { useModals } from "@revolt/modal";
 import {
@@ -45,22 +45,10 @@ export function EmojiList(props: { server: Server }) {
   );
 
   async function onSubmit() {
-    const body = new FormData();
-    body.append("file", editGroup.controls.file.value![0]);
+    const file = editGroup.controls.file.value![0] as File;
+    const id = await uploadFileToAutumn(client(), "emojis", file);
 
-    const [key, value] = client().authenticationHeader;
-    const data: { id: string } = await fetch(
-      `${CONFIGURATION.DEFAULT_MEDIA_URL}/emojis`,
-      {
-        method: "POST",
-        body,
-        headers: {
-          [key]: value,
-        },
-      },
-    ).then((res) => res.json());
-
-    await props.server.createEmoji(data.id, {
+    await props.server.createEmoji(id, {
       name: editGroup.controls.name.value,
     });
   }

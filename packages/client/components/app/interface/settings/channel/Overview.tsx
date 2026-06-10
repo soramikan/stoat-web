@@ -5,7 +5,7 @@ import { Trans, useLingui } from "@lingui-solid/solid/macro";
 import type { API } from "stoat.js";
 
 import { useClient } from "@revolt/client";
-import { CONFIGURATION } from "@revolt/common";
+import { uploadFileToAutumn } from "@revolt/common";
 import { useModals } from "@revolt/modal";
 import {
   Button,
@@ -73,22 +73,11 @@ export default function ChannelOverview(props: ChannelSettingsProps) {
       if (!editGroup.controls.icon.value) {
         changes.remove!.push("Icon");
       } else if (Array.isArray(editGroup.controls.icon.value)) {
-        const body = new FormData();
-        body.append("file", editGroup.controls.icon.value[0]);
-
-        const [key, value] = client().authenticationHeader;
-        const data: { id: string } = await fetch(
-          `${CONFIGURATION.DEFAULT_MEDIA_URL}/icons`,
-          {
-            method: "POST",
-            body,
-            headers: {
-              [key]: value,
-            },
-          },
-        ).then((res) => res.json());
-
-        changes.icon = data.id;
+        changes.icon = await uploadFileToAutumn(
+          client(),
+          "icons",
+          editGroup.controls.icon.value[0],
+        );
       }
     }
 

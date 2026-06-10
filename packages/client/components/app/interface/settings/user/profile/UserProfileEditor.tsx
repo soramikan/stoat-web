@@ -6,7 +6,7 @@ import { useQuery, useQueryClient } from "@tanstack/solid-query";
 import { API, User } from "stoat.js";
 
 import { useClient } from "@revolt/client";
-import { CONFIGURATION } from "@revolt/common";
+import { CONFIGURATION, uploadFileToAutumn } from "@revolt/common";
 import {
   CategoryButton,
   CircularProgress,
@@ -99,10 +99,10 @@ export function UserProfileEditor(props: Props) {
       if (!editGroup.controls.avatar.value) {
         changes.remove!.push("Avatar");
       } else if (Array.isArray(editGroup.controls.avatar.value)) {
-        changes.avatar = await client().uploadFile(
+        changes.avatar = await uploadFileToAutumn(
+          client(),
           "avatars",
           editGroup.controls.avatar.value[0],
-          CONFIGURATION.DEFAULT_MEDIA_URL,
         );
       }
     }
@@ -123,10 +123,10 @@ export function UserProfileEditor(props: Props) {
         changes.remove!.push("ProfileBackground");
       } else if (Array.isArray(editGroup.controls.banner.value)) {
         changes.profile ??= {};
-        changes.profile.background = await client().uploadFile(
+        changes.profile.background = await uploadFileToAutumn(
+          client(),
           "backgrounds",
           editGroup.controls.banner.value[0],
-          CONFIGURATION.DEFAULT_MEDIA_URL,
         );
 
         newBannerUrl = `${CONFIGURATION.DEFAULT_MEDIA_URL}/backgrounds/${changes.profile.background}`;

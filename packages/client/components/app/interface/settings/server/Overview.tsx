@@ -5,7 +5,7 @@ import { Trans, useLingui } from "@lingui-solid/solid/macro";
 import type { API } from "stoat.js";
 
 import { useClient } from "@revolt/client";
-import { CONFIGURATION } from "@revolt/common";
+import { uploadFileToAutumn } from "@revolt/common";
 import {
   CircularProgress,
   Column,
@@ -141,10 +141,10 @@ export default function ServerOverview(props: ServerSettingsProps) {
       if (!editGroup.controls.icon.value) {
         changes.remove!.push("Icon");
       } else if (Array.isArray(editGroup.controls.icon.value)) {
-        changes.icon = await client().uploadFile(
+        changes.icon = await uploadFileToAutumn(
+          client(),
           "icons",
           editGroup.controls.icon.value[0],
-          CONFIGURATION.DEFAULT_MEDIA_URL,
         );
       }
     }
@@ -153,10 +153,10 @@ export default function ServerOverview(props: ServerSettingsProps) {
       if (!editGroup.controls.banner.value) {
         changes.remove!.push("Banner");
       } else if (Array.isArray(editGroup.controls.banner.value)) {
-        changes.banner = await client().uploadFile(
+        changes.banner = await uploadFileToAutumn(
+          client(),
           "banners",
           editGroup.controls.banner.value[0],
-          CONFIGURATION.DEFAULT_MEDIA_URL,
         );
       }
     }

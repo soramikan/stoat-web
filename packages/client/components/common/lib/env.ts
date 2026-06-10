@@ -76,6 +76,12 @@ export default {
   MAX_FILE_SIZE:
     (import.meta.env.VITE_CFG_MAX_FILE_SIZE as number) ?? 20_000_000,
   /**
+   * Default chunk size used for CDN-safe uploads when the backend does not
+   * advertise one.
+   */
+  UPLOAD_CHUNK_SIZE:
+    Number(import.meta.env.VITE_CFG_UPLOAD_CHUNK_SIZE) || 50 * 1024 * 1024,
+  /**
    * RNNoise worklet CDN host location. Defaults to blank, which uses the url provided by the livekit-rnnoise-processor package.
    */
   RNNOISE_WORKLET_CDN_URL:

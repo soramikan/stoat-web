@@ -6,7 +6,7 @@ import { useMutation } from "@tanstack/solid-query";
 import { API, ChannelWebhook } from "stoat.js";
 
 import { useClient } from "@revolt/client";
-import { CONFIGURATION } from "@revolt/common";
+import { CONFIGURATION, uploadFileToAutumn } from "@revolt/common";
 import { useModals } from "@revolt/modal";
 import {
   CategoryButton,
@@ -58,22 +58,11 @@ export function ViewWebhook(props: { webhook: ChannelWebhook }) {
       if (!editGroup.controls.avatar.value) {
         changes.remove!.push("Avatar");
       } else if (Array.isArray(editGroup.controls.avatar.value)) {
-        const body = new FormData();
-        body.append("file", editGroup.controls.avatar.value[0]);
-
-        const [key, value] = client().authenticationHeader;
-        const data: { id: string } = await fetch(
-          `${CONFIGURATION.DEFAULT_MEDIA_URL}/avatars`,
-          {
-            method: "POST",
-            body,
-            headers: {
-              [key]: value,
-            },
-          },
-        ).then((res) => res.json());
-
-        changes.avatar = data.id;
+        changes.avatar = await uploadFileToAutumn(
+          client(),
+          "avatars",
+          editGroup.controls.avatar.value[0],
+        );
       }
     }
 
