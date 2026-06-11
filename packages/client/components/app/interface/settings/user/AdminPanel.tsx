@@ -1,11 +1,13 @@
 import {
+  type Setter,
+  createEffect,
+  createMemo,
+  createResource,
+  createSignal,
   For,
   Match,
   Show,
   Switch,
-  createEffect,
-  createResource,
-  createSignal,
 } from "solid-js";
 
 import { Trans, useLingui } from "@lingui-solid/solid/macro";
@@ -64,6 +66,12 @@ type AdminServerEntry = {
   state?: AdminServerOverride;
 };
 
+type LimitRow = {
+  id: string;
+  tag: string;
+  value: string;
+};
+
 const DEFAULT_SETTINGS: AdminSettings = {
   _id: "global",
   roles: {},
@@ -85,23 +93,40 @@ const ADMIN_PERMISSIONS = [
   "create_servers",
 ];
 
+const PERMISSION_LABELS: Record<string, string> = {
+  manage_admin: "Manage admin settings",
+  manage_users: "Manage users",
+  manage_servers: "Manage servers",
+  manage_upload_limits: "Manage upload limits",
+  create_servers: "Create servers",
+};
+
 const pane = css({
   display: "grid",
   gap: "12px",
 });
 
-const editor = css({
-  width: "100%",
-  minHeight: "180px",
-  resize: "vertical",
+const section = css({
+  display: "grid",
+  gap: "12px",
   border: "1px solid var(--md-sys-color-outline-variant)",
   borderRadius: "8px",
   padding: "12px",
-  color: "var(--md-sys-color-on-surface)",
   background: "var(--md-sys-color-surface-container)",
-  fontFamily: "var(--fonts-monospace)",
-  fontSize: "13px",
-  lineHeight: 1.45,
+});
+
+const sectionHeader = css({
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "space-between",
+  flexWrap: "wrap",
+  gap: "8px",
+});
+
+const formGrid = css({
+  display: "grid",
+  gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))",
+  gap: "10px",
 });
 
 const input = css({
@@ -111,6 +136,16 @@ const input = css({
   color: "var(--md-sys-color-on-surface)",
   background: "var(--md-sys-color-surface-container)",
   minWidth: 0,
+});
+
+const inputCompact = css({
+  border: "1px solid var(--md-sys-color-outline-variant)",
+  borderRadius: "8px",
+  padding: "8px 10px",
+  color: "var(--md-sys-color-on-surface)",
+  background: "var(--md-sys-color-surface-container-low)",
+  minWidth: 0,
+  width: "100%",
 });
 
 const tabs = css({
@@ -126,14 +161,37 @@ const label = css({
   color: "var(--md-sys-color-on-surface-variant)",
 });
 
-function pretty(value: unknown) {
-  return JSON.stringify(value, null, 2);
-}
+const helper = css({
+  fontSize: "12px",
+  lineHeight: 1.4,
+  color: "var(--md-sys-color-on-surface-variant)",
+});
 
-function parseJson<T>(value: string, fallback: T): T {
-  if (!value.trim()) return fallback;
-  return JSON.parse(value) as T;
-}
+const permissionGrid = css({
+  display: "grid",
+  gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))",
+  gap: "6px",
+});
+
+const limitRow = css({
+  display: "grid",
+  gridTemplateColumns: "minmax(120px, 1fr) minmax(96px, 140px) auto",
+  alignItems: "center",
+  gap: "8px",
+});
+
+const actions = css({
+  display: "flex",
+  flexWrap: "wrap",
+  gap: "8px",
+});
+
+const emptyState = css({
+  border: "1px dashed var(--md-sys-color-outline-variant)",
+  borderRadius: "8px",
+  padding: "12px",
+  color: "var(--md-sys-color-on-surface-variant)",
+});
 
 function splitCsv(value: string) {
   return value
@@ -148,6 +206,174 @@ function defaultUserOverride(): AdminUserOverride {
     permissions: [],
     upload_limits: {},
   };
+}
+
+let nextLimitRowId = 0;
+
+function newLimitRow(tag = "", value: string | number = ""): LimitRow {
+  return {
+    id: `limit-${nextLimitRowId++}`,
+    tag,
+    value: value.toString(),
+  };
+}
+
+function limitRowsFromRecord(record: Record<string, number> = {}) {
+  return Object.entries(record)
+    .sort(([a], [b]) => a.localeCompare(b))
+    .map(([tag, value]) => newLimitRow(tag, value));
+}
+
+function limitRowsToRecord(rows: LimitRow[]) {
+  const record: Record<string, number> = {};
+
+  for (const row of rows) {
+    const tag = row.tag.trim();
+    const value = Number(row.value);
+
+    if (!tag || !Number.isFinite(value) || value < 0) continue;
+    record[tag] = value;
+  }
+
+  return record;
+}
+
+function toggleValue(
+  setter: Setter<string[]>,
+  value: string,
+  checked: boolean,
+) {
+  setter((current) => {
+    if (checked) return Array.from(new Set([...current, value]));
+    return current.filter((item) => item !== value);
+  });
+}
+
+function PermissionChecklist(props: {
+  value: () => string[];
+  setValue: Setter<string[]>;
+}) {
+  return (
+    <div class={permissionGrid}>
+      <For each={ADMIN_PERMISSIONS}>
+        {(permission) => (
+          <Checkbox
+            checked={props.value().includes(permission)}
+            onChange={(event) =>
+              toggleValue(
+                props.setValue,
+                permission,
+                event.currentTarget.checked,
+              )
+            }
+          >
+            {PERMISSION_LABELS[permission] ?? permission}
+          </Checkbox>
+        )}
+      </For>
+    </div>
+  );
+}
+
+function RoleChecklist(props: {
+  roles: () => Record<string, AdminRole>;
+  value: () => string[];
+  setValue: Setter<string[]>;
+}) {
+  const entries = () => Object.entries(props.roles());
+
+  return (
+    <Show
+      when={entries().length}
+      fallback={<div class={emptyState}>No roles have been created.</div>}
+    >
+      <div class={permissionGrid}>
+        <For each={entries()}>
+          {([roleId, role]) => (
+            <Checkbox
+              checked={props.value().includes(roleId)}
+              onChange={(event) =>
+                toggleValue(props.setValue, roleId, event.currentTarget.checked)
+              }
+            >
+              {role.name} ({roleId})
+            </Checkbox>
+          )}
+        </For>
+      </div>
+    </Show>
+  );
+}
+
+function UploadLimitEditor(props: {
+  rows: () => LimitRow[];
+  setRows: Setter<LimitRow[]>;
+}) {
+  return (
+    <Column gap="sm">
+      <Show
+        when={props.rows().length}
+        fallback={<div class={emptyState}>No upload limits configured.</div>}
+      >
+        <For each={props.rows()}>
+          {(row) => (
+            <div class={limitRow}>
+              <input
+                class={inputCompact}
+                placeholder="Tag"
+                value={row.tag}
+                onInput={(event) =>
+                  props.setRows((rows) =>
+                    rows.map((item) =>
+                      item.id === row.id
+                        ? { ...item, tag: event.currentTarget.value }
+                        : item,
+                    ),
+                  )
+                }
+              />
+              <input
+                class={inputCompact}
+                placeholder="Bytes"
+                type="number"
+                min={0}
+                value={row.value}
+                onInput={(event) =>
+                  props.setRows((rows) =>
+                    rows.map((item) =>
+                      item.id === row.id
+                        ? { ...item, value: event.currentTarget.value }
+                        : item,
+                    ),
+                  )
+                }
+              />
+              <Button
+                size="sm"
+                variant="outlined"
+                onPress={() =>
+                  props.setRows((rows) =>
+                    rows.filter((item) => item.id !== row.id),
+                  )
+                }
+              >
+                Remove
+              </Button>
+            </div>
+          )}
+        </For>
+      </Show>
+      <Row>
+        <Button
+          size="sm"
+          variant="tonal"
+          onPress={() => props.setRows((rows) => [...rows, newLimitRow()])}
+        >
+          Add limit
+        </Button>
+      </Row>
+    </Column>
+  );
 }
 
 export default function AdminPanel() {
@@ -191,23 +417,34 @@ export default function AdminPanel() {
     AdminServerEntry[]
   >(() => adminRequest("GET", "/admin/servers"));
 
-  const [rolesJson, setRolesJson] = createSignal("{}");
-  const [usersJson, setUsersJson] = createSignal("{}");
-  const [uploadJson, setUploadJson] = createSignal("{}");
   const [creationRestricted, setCreationRestricted] = createSignal(false);
   const [creationUsers, setCreationUsers] = createSignal("");
   const [creationRoles, setCreationRoles] = createSignal("");
+  const [defaultLimitRows, setDefaultLimitRows] = createSignal<LimitRow[]>([]);
+
+  const [editingRoleId, setEditingRoleId] = createSignal<string>();
+  const [roleId, setRoleId] = createSignal("");
+  const [roleName, setRoleName] = createSignal("");
+  const [rolePermissions, setRolePermissions] = createSignal<string[]>([]);
+  const [roleLimitRows, setRoleLimitRows] = createSignal<LimitRow[]>([]);
+
+  const [selectedUserId, setSelectedUserId] = createSignal<string>();
+  const [userRoles, setUserRoles] = createSignal<string[]>([]);
+  const [userPermissions, setUserPermissions] = createSignal<string[]>([]);
+  const [userLimitRows, setUserLimitRows] = createSignal<LimitRow[]>([]);
+
+  const selectedUser = createMemo(() =>
+    users()?.find((entry) => entry.user._id === selectedUserId()),
+  );
 
   createEffect(() => {
     const value = settings();
     if (!value) return;
 
-    setRolesJson(pretty(value.roles ?? {}));
-    setUsersJson(pretty(value.users ?? {}));
-    setUploadJson(pretty(value.default_upload_limits ?? {}));
     setCreationRestricted(value.server_creation?.restricted ?? false);
     setCreationUsers((value.server_creation?.allowed_users ?? []).join(","));
     setCreationRoles((value.server_creation?.allowed_roles ?? []).join(","));
+    setDefaultLimitRows(limitRowsFromRecord(value.default_upload_limits ?? {}));
   });
 
   async function refreshAll() {
@@ -220,24 +457,16 @@ export default function AdminPanel() {
     await refreshAll();
   }
 
-  async function saveSettings() {
+  async function savePlatformSettings() {
     const current = settings() ?? DEFAULT_SETTINGS;
     const next: AdminSettings = {
       ...current,
       _id: "global",
-      roles: parseJson(rolesJson(), {}),
-      users: parseJson(usersJson(), {}),
-      default_upload_limits: parseJson(uploadJson(), {}),
+      default_upload_limits: limitRowsToRecord(defaultLimitRows()),
       server_creation: {
         restricted: creationRestricted(),
-        allowed_users: creationUsers()
-          .split(",")
-          .map((value) => value.trim())
-          .filter(Boolean),
-        allowed_roles: creationRoles()
-          .split(",")
-          .map((value) => value.trim())
-          .filter(Boolean),
+        allowed_users: splitCsv(creationUsers()),
+        allowed_roles: splitCsv(creationRoles()),
       },
     };
 
@@ -255,45 +484,24 @@ export default function AdminPanel() {
     });
   }
 
-  async function editUserRoles(user: AdminUserEntry) {
+  function editUserOverride(user: AdminUserEntry) {
     const current = settings() ?? DEFAULT_SETTINGS;
     const override = current.users[user.user._id] ?? defaultUserOverride();
-    const roles = window.prompt(t`Roles`, override.roles.join(","));
-    if (roles === null) return;
 
-    await saveUserOverride(user.user._id, {
-      ...override,
-      roles: splitCsv(roles),
-    });
+    setSelectedUserId(user.user._id);
+    setUserRoles([...override.roles]);
+    setUserPermissions([...override.permissions]);
+    setUserLimitRows(limitRowsFromRecord(override.upload_limits));
   }
 
-  async function editUserPermissions(user: AdminUserEntry) {
-    const current = settings() ?? DEFAULT_SETTINGS;
-    const override = current.users[user.user._id] ?? defaultUserOverride();
-    const permissions = window.prompt(
-      t`Permissions`,
-      override.permissions.join(","),
-    );
-    if (permissions === null) return;
+  async function saveSelectedUserOverride() {
+    const userId = selectedUserId();
+    if (!userId) return;
 
-    await saveUserOverride(user.user._id, {
-      ...override,
-      permissions: splitCsv(permissions),
-    });
-  }
-
-  async function editUserUploadLimits(user: AdminUserEntry) {
-    const current = settings() ?? DEFAULT_SETTINGS;
-    const override = current.users[user.user._id] ?? defaultUserOverride();
-    const uploadLimits = window.prompt(
-      t`Upload limits`,
-      pretty(override.upload_limits),
-    );
-    if (uploadLimits === null) return;
-
-    await saveUserOverride(user.user._id, {
-      ...override,
-      upload_limits: parseJson(uploadLimits, {}),
+    await saveUserOverride(userId, {
+      roles: userRoles(),
+      permissions: userPermissions(),
+      upload_limits: limitRowsToRecord(userLimitRows()),
     });
   }
 
@@ -302,64 +510,46 @@ export default function AdminPanel() {
     const current = settings() ?? DEFAULT_SETTINGS;
     const users = { ...current.users };
     delete users[user.user._id];
+    if (selectedUserId() === user.user._id) setSelectedUserId(undefined);
     await putSettings({ ...current, users });
   }
 
-  async function createRole() {
-    const id = window.prompt(t`Role ID`);
-    if (!id) return;
+  function createRole() {
+    setEditingRoleId("new");
+    setRoleId("");
+    setRoleName("");
+    setRolePermissions([]);
+    setRoleLimitRows([]);
+  }
+
+  function editRole(roleId: string, role: AdminRole) {
+    setEditingRoleId(roleId);
+    setRoleId(roleId);
+    setRoleName(role.name);
+    setRolePermissions([...role.permissions]);
+    setRoleLimitRows(limitRowsFromRecord(role.upload_limits));
+  }
+
+  async function saveRole() {
+    const id = roleId().trim();
+    if (!id) {
+      window.alert(t`Role ID is required`);
+      return;
+    }
 
     const current = settings() ?? DEFAULT_SETTINGS;
-    const name = window.prompt(t`Role name`, id);
-    if (name === null) return;
-
-    const permissions = window.prompt(t`Permissions`, "");
-    if (permissions === null) return;
-
-    const uploadLimits = window.prompt(t`Upload limits`, "{}");
-    if (uploadLimits === null) return;
-
     await putSettings({
       ...current,
       roles: {
         ...current.roles,
         [id]: {
-          name,
-          permissions: splitCsv(permissions),
-          upload_limits: parseJson(uploadLimits, {}),
+          name: roleName().trim() || id,
+          permissions: rolePermissions(),
+          upload_limits: limitRowsToRecord(roleLimitRows()),
         },
       },
     });
-  }
-
-  async function editRole(roleId: string, role: AdminRole) {
-    const name = window.prompt(t`Role name`, role.name);
-    if (name === null) return;
-
-    const permissions = window.prompt(
-      t`Permissions`,
-      role.permissions.join(","),
-    );
-    if (permissions === null) return;
-
-    const uploadLimits = window.prompt(
-      t`Upload limits`,
-      pretty(role.upload_limits),
-    );
-    if (uploadLimits === null) return;
-
-    const current = settings() ?? DEFAULT_SETTINGS;
-    await putSettings({
-      ...current,
-      roles: {
-        ...current.roles,
-        [roleId]: {
-          name,
-          permissions: splitCsv(permissions),
-          upload_limits: parseJson(uploadLimits, {}),
-        },
-      },
-    });
+    setEditingRoleId(undefined);
   }
 
   async function deleteRole(roleId: string) {
@@ -457,7 +647,7 @@ export default function AdminPanel() {
           variant={tab() === "settings" ? "filled" : "tonal"}
           onPress={() => setTab("settings")}
         >
-          <Trans>Roles</Trans>
+          <Trans>Settings</Trans>
         </Button>
       </Row>
 
@@ -471,61 +661,117 @@ export default function AdminPanel() {
         </Match>
 
         <Match when={tab() === "users"}>
-          <CategoryButton.Group>
-            <For each={users()}>
-              {(entry) => (
-                <CategoryButton
-                  description={
-                    <>
-                      {entry.user._id}
-                      <Show when={entry.default_admin}> · Default admin</Show>
-                      <Show when={entry.permissions.length}>
-                        {" "}
-                        · {entry.permissions.join(", ")}
-                      </Show>
-                    </>
-                  }
-                  action={[
-                    <Button size="sm" onPress={() => editUserRoles(entry)}>
-                      Roles
-                    </Button>,
-                    <Button
-                      size="sm"
-                      onPress={() => editUserPermissions(entry)}
-                    >
-                      Permissions
-                    </Button>,
-                    <Button
-                      size="sm"
-                      onPress={() => editUserUploadLimits(entry)}
-                    >
-                      Limits
-                    </Button>,
-                    <Button size="sm" onPress={() => clearUserOverride(entry)}>
-                      Clear
-                    </Button>,
-                    <Button size="sm" onPress={() => renameUser(entry)}>
-                      Rename
-                    </Button>,
-                    <Button size="sm" onPress={() => suspendUser(entry)}>
-                      Suspend
-                    </Button>,
-                    <Button size="sm" onPress={() => unsuspendUser(entry)}>
-                      Unsuspend
-                    </Button>,
-                    <Button size="sm" onPress={() => resetPassword(entry)}>
-                      Reset
-                    </Button>,
-                    <Button size="sm" onPress={() => deleteUser(entry)}>
-                      Delete
-                    </Button>,
-                  ]}
-                >
-                  {entry.user.username}
-                </CategoryButton>
-              )}
-            </For>
-          </CategoryButton.Group>
+          <Column gap="lg">
+            <CategoryButton.Group>
+              <For each={users()}>
+                {(entry) => (
+                  <CategoryButton
+                    description={
+                      <>
+                        {entry.user._id}
+                        <Show when={entry.default_admin}> · Default admin</Show>
+                        <Show when={entry.permissions.length}>
+                          {" "}
+                          · {entry.permissions.join(", ")}
+                        </Show>
+                      </>
+                    }
+                    action={[
+                      <Button size="sm" onPress={() => editUserOverride(entry)}>
+                        Admin settings
+                      </Button>,
+                      <Button
+                        size="sm"
+                        onPress={() => clearUserOverride(entry)}
+                      >
+                        Clear
+                      </Button>,
+                      <Button size="sm" onPress={() => renameUser(entry)}>
+                        Rename
+                      </Button>,
+                      <Button size="sm" onPress={() => suspendUser(entry)}>
+                        Suspend
+                      </Button>,
+                      <Button size="sm" onPress={() => unsuspendUser(entry)}>
+                        Unsuspend
+                      </Button>,
+                      <Button size="sm" onPress={() => resetPassword(entry)}>
+                        Reset
+                      </Button>,
+                      <Button size="sm" onPress={() => deleteUser(entry)}>
+                        Delete
+                      </Button>,
+                    ]}
+                  >
+                    {entry.user.username}
+                  </CategoryButton>
+                )}
+              </For>
+            </CategoryButton.Group>
+
+            <Show when={selectedUser()}>
+              <div class={section}>
+                <div class={sectionHeader}>
+                  <Column gap="xs">
+                    <Text>User admin settings</Text>
+                    <div class={helper}>
+                      {selectedUser()?.user.username} ·{" "}
+                      {selectedUser()?.user._id}
+                    </div>
+                  </Column>
+                  <Button
+                    size="sm"
+                    variant="text"
+                    onPress={() => setSelectedUserId(undefined)}
+                  >
+                    Close
+                  </Button>
+                </div>
+
+                <Column gap="sm">
+                  <Text>Roles</Text>
+                  <RoleChecklist
+                    roles={() => settings()?.roles ?? {}}
+                    value={userRoles}
+                    setValue={setUserRoles}
+                  />
+                </Column>
+
+                <Column gap="sm">
+                  <Text>Permissions</Text>
+                  <PermissionChecklist
+                    value={userPermissions}
+                    setValue={setUserPermissions}
+                  />
+                </Column>
+
+                <Column gap="sm">
+                  <Text>Upload limits</Text>
+                  <div class={helper}>
+                    Enter byte limits by tag. Empty rows are ignored.
+                  </div>
+                  <UploadLimitEditor
+                    rows={userLimitRows}
+                    setRows={setUserLimitRows}
+                  />
+                </Column>
+
+                <div class={actions}>
+                  <Button variant="filled" onPress={saveSelectedUserOverride}>
+                    Save user settings
+                  </Button>
+                  <Button
+                    variant="outlined"
+                    onPress={() =>
+                      selectedUser() && clearUserOverride(selectedUser()!)
+                    }
+                  >
+                    Clear user override
+                  </Button>
+                </div>
+              </div>
+            </Show>
+          </Column>
         </Match>
 
         <Match when={tab() === "servers"}>
@@ -564,104 +810,180 @@ export default function AdminPanel() {
 
         <Match when={tab() === "settings"}>
           <div class={pane}>
-            <Checkbox
-              checked={creationRestricted()}
-              onChange={(event) =>
-                setCreationRestricted(event.currentTarget.checked)
-              }
-            >
-              Restrict server creation
-            </Checkbox>
+            <div class={section}>
+              <Column gap="xs">
+                <Text>Server creation</Text>
+                <div class={helper}>
+                  Choose who can create servers when creation is restricted.
+                </div>
+              </Column>
 
-            <label class={label}>
-              Allowed users
-              <input
-                class={input}
-                value={creationUsers()}
-                onInput={(event) => setCreationUsers(event.currentTarget.value)}
-              />
-            </label>
+              <Checkbox
+                checked={creationRestricted()}
+                onChange={(event) =>
+                  setCreationRestricted(event.currentTarget.checked)
+                }
+              >
+                Restrict server creation
+              </Checkbox>
 
-            <label class={label}>
-              Allowed roles
-              <input
-                class={input}
-                value={creationRoles()}
-                onInput={(event) => setCreationRoles(event.currentTarget.value)}
-              />
-            </label>
-
-            <Row>
-              <Button variant="tonal" onPress={createRole}>
-                Add role
-              </Button>
-            </Row>
-
-            <Text>Permissions: {ADMIN_PERMISSIONS.join(", ")}</Text>
-
-            <CategoryButton.Group>
-              <For each={Object.entries(settings()?.roles ?? {})}>
-                {([roleId, role]) => (
-                  <CategoryButton
-                    description={
-                      <>
-                        {roleId}
-                        <Show when={role.permissions.length}>
-                          {" "}
-                          · {role.permissions.join(", ")}
-                        </Show>
-                      </>
+              <div class={formGrid}>
+                <label class={label}>
+                  Allowed users
+                  <input
+                    class={input}
+                    placeholder="User IDs, comma separated"
+                    value={creationUsers()}
+                    onInput={(event) =>
+                      setCreationUsers(event.currentTarget.value)
                     }
-                    action={[
-                      <Button size="sm" onPress={() => editRole(roleId, role)}>
-                        Edit
-                      </Button>,
-                      <Button size="sm" onPress={() => deleteRole(roleId)}>
-                        Delete
-                      </Button>,
-                    ]}
-                  >
-                    {role.name}
-                  </CategoryButton>
-                )}
-              </For>
-            </CategoryButton.Group>
+                  />
+                </label>
 
-            <label class={label}>
-              Roles
-              <textarea
-                class={editor}
-                value={rolesJson()}
-                onInput={(event) => setRolesJson(event.currentTarget.value)}
+                <label class={label}>
+                  Allowed roles
+                  <input
+                    class={input}
+                    placeholder="Role IDs, comma separated"
+                    value={creationRoles()}
+                    onInput={(event) =>
+                      setCreationRoles(event.currentTarget.value)
+                    }
+                  />
+                </label>
+              </div>
+            </div>
+
+            <div class={section}>
+              <Column gap="xs">
+                <Text>Default upload limits</Text>
+                <div class={helper}>
+                  These limits apply before per-role or per-user upload limits.
+                </div>
+              </Column>
+              <UploadLimitEditor
+                rows={defaultLimitRows}
+                setRows={setDefaultLimitRows}
               />
-            </label>
+            </div>
 
-            <label class={label}>
-              User overrides
-              <textarea
-                class={editor}
-                value={usersJson()}
-                onInput={(event) => setUsersJson(event.currentTarget.value)}
-              />
-            </label>
+            <div class={section}>
+              <div class={sectionHeader}>
+                <Column gap="xs">
+                  <Text>Admin roles</Text>
+                  <div class={helper}>
+                    Create reusable permission sets, then assign them to users.
+                  </div>
+                </Column>
+                <Button variant="tonal" onPress={createRole}>
+                  Add role
+                </Button>
+              </div>
 
-            <label class={label}>
-              Default upload limits
-              <textarea
-                class={editor}
-                value={uploadJson()}
-                onInput={(event) => setUploadJson(event.currentTarget.value)}
-              />
-            </label>
+              <Show when={editingRoleId()}>
+                <div class={pane}>
+                  <div class={formGrid}>
+                    <label class={label}>
+                      Role ID
+                      <input
+                        class={input}
+                        disabled={editingRoleId() !== "new"}
+                        value={roleId()}
+                        onInput={(event) =>
+                          setRoleId(event.currentTarget.value)
+                        }
+                      />
+                    </label>
 
-            <Row>
-              <Button variant="filled" onPress={saveSettings}>
+                    <label class={label}>
+                      Role name
+                      <input
+                        class={input}
+                        value={roleName()}
+                        onInput={(event) =>
+                          setRoleName(event.currentTarget.value)
+                        }
+                      />
+                    </label>
+                  </div>
+
+                  <Column gap="sm">
+                    <Text>Permissions</Text>
+                    <PermissionChecklist
+                      value={rolePermissions}
+                      setValue={setRolePermissions}
+                    />
+                  </Column>
+
+                  <Column gap="sm">
+                    <Text>Upload limits</Text>
+                    <UploadLimitEditor
+                      rows={roleLimitRows}
+                      setRows={setRoleLimitRows}
+                    />
+                  </Column>
+
+                  <div class={actions}>
+                    <Button variant="filled" onPress={saveRole}>
+                      Save role
+                    </Button>
+                    <Button
+                      variant="outlined"
+                      onPress={() => setEditingRoleId(undefined)}
+                    >
+                      Cancel
+                    </Button>
+                  </div>
+                </div>
+              </Show>
+
+              <Show
+                when={Object.entries(settings()?.roles ?? {}).length}
+                fallback={
+                  <div class={emptyState}>No roles have been created.</div>
+                }
+              >
+                <CategoryButton.Group>
+                  <For each={Object.entries(settings()?.roles ?? {})}>
+                    {([roleId, role]) => (
+                      <CategoryButton
+                        description={
+                          <>
+                            {roleId}
+                            <Show when={role.permissions.length}>
+                              {" "}
+                              · {role.permissions.join(", ")}
+                            </Show>
+                          </>
+                        }
+                        action={[
+                          <Button
+                            size="sm"
+                            onPress={() => editRole(roleId, role)}
+                          >
+                            Edit
+                          </Button>,
+                          <Button size="sm" onPress={() => deleteRole(roleId)}>
+                            Delete
+                          </Button>,
+                        ]}
+                      >
+                        {role.name}
+                      </CategoryButton>
+                    )}
+                  </For>
+                </CategoryButton.Group>
+              </Show>
+            </div>
+
+            <div class={actions}>
+              <Button variant="filled" onPress={savePlatformSettings}>
                 <Trans>Save</Trans>
               </Button>
               <Button variant="tonal" onPress={refreshAll}>
                 Refresh
               </Button>
-            </Row>
+            </div>
           </div>
         </Match>
       </Switch>
