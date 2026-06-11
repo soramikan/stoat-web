@@ -3,6 +3,11 @@ import { cleanupOutdatedCaches, precacheAndRoute } from "workbox-precaching";
 
 declare let self: ServiceWorkerGlobalScope;
 
+self.skipWaiting();
+self.addEventListener("activate", (event) => {
+  event.waitUntil(self.clients.claim());
+});
+
 interface ChannelPartial {
   channel_type: string;
   name?: string;
@@ -68,6 +73,7 @@ precacheAndRoute(
   self.__WB_MANIFEST.filter((entry) => {
     try {
       const url = typeof entry === "string" ? entry : entry.url;
+      if (url === "index.html" || url.endsWith("/index.html")) return false;
       if (url.includes("-legacy")) return false;
 
       const fn = url.split("/").pop();

@@ -175,7 +175,16 @@ export class State {
   async hydrate() {
     // load all data first
     for (const store of this.iterStores()) {
-      const data = await localforage.getItem(store.getKey());
+      let data;
+      try {
+        data = await localforage.getItem(store.getKey());
+      } catch (error) {
+        console.warn(
+          `[store.hydrate] Failed to load '${store.getKey()}' from storage.`,
+          error,
+        );
+        continue;
+      }
 
       if (data) {
         // validate the incoming data
@@ -209,7 +218,14 @@ export function StateContext(props: { children: JSX.Element }) {
   const stateLocal = new State();
   const [ready, setReady] = createSignal(false);
 
-  onMount(() => stateLocal.hydrate().then(() => setReady(true)));
+  onMount(() =>
+    stateLocal
+      .hydrate()
+      .catch((error) => {
+        console.warn("[store.hydrate] Falling back to default state.", error);
+      })
+      .finally(() => setReady(true)),
+  );
 
   return (
     <stateContext.Provider value={stateLocal}>

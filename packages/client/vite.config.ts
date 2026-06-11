@@ -31,6 +31,7 @@ export default defineConfig({
       filename: "serviceWorker.ts",
       strategies: "injectManifest",
       injectManifest: {
+        globIgnores: ["**/index.html"],
         maximumFileSizeToCacheInBytes: 4000000,
       },
       manifest: {
