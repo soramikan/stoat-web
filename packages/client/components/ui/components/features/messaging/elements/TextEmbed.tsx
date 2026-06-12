@@ -1,4 +1,4 @@
-import { Match, Show, Switch } from "solid-js";
+import { For, Match, Show, Switch } from "solid-js";
 
 import { TextEmbed as TextEmbedClass, WebsiteEmbed } from "stoat.js";
 import { css } from "styled-system/css";
@@ -54,6 +54,24 @@ const PreviewImage = styled("img", {
   },
 });
 
+const AuthorIcon = styled("img", {
+  base: {
+    width: "20px",
+    height: "20px",
+    borderRadius: "50%",
+    flexShrink: 0,
+  },
+});
+
+const FooterIcon = styled("img", {
+  base: {
+    width: "16px",
+    height: "16px",
+    borderRadius: "50%",
+    flexShrink: 0,
+  },
+});
+
 const Title = styled("span", {
   base: {
     minWidth: 0,
@@ -78,15 +96,91 @@ const Description = styled("div", {
   },
 });
 
+const FieldGrid = styled("div", {
+  base: {
+    display: "grid",
+    gridTemplateColumns: "repeat(3, minmax(0, 1fr))",
+    gap: "var(--gap-md)",
+  },
+});
+
+const Field = styled("div", {
+  base: {
+    minWidth: 0,
+    display: "flex",
+    flexDirection: "column",
+    gap: "var(--gap-xs)",
+    fontSize: "12px",
+    wordBreak: "break-word",
+  },
+  variants: {
+    inline: {
+      false: {
+        gridColumn: "1 / -1",
+      },
+    },
+  },
+});
+
+const FieldName = styled("span", {
+  base: {
+    fontWeight: 700,
+  },
+});
+
+const EmbedImage = styled("img", {
+  base: {
+    maxWidth: "100%",
+    maxHeight: "320px",
+    borderRadius: "var(--borderRadius-md)",
+    objectFit: "contain",
+  },
+});
+
+const Footer = styled("div", {
+  base: {
+    display: "flex",
+    alignItems: "center",
+    gap: "var(--gap-sm)",
+    fontSize: "12px",
+    opacity: 0.8,
+    minWidth: 0,
+  },
+});
+
 /**
  * Text Embed
  */
 export function TextEmbed(props: { embed: TextEmbedClass | WebsiteEmbed }) {
   const { openModal } = useModals();
+  const textEmbed = () =>
+    props.embed.type === "Text" ? (props.embed as TextEmbedClass) : undefined;
 
   return (
-    <Base style={{ "border-color": props.embed.colour }}>
+    <Base
+      style={{ "border-color": props.embed.colour ?? textEmbed()?.colorHex }}
+    >
       <Content gap="md" grow>
+        <Show when={textEmbed()?.author}>
+          <SiteInformation>
+            <Show when={textEmbed()!.author!.icon_url}>
+              <AuthorIcon
+                loading="lazy"
+                draggable={false}
+                src={textEmbed()!.proxiedAuthorIconURL}
+                onError={(e) => (e.currentTarget.style.display = "none")}
+              />
+            </Show>
+            <RenderAnchor href={textEmbed()!.author!.url}>
+              <OverflowingText>
+                <Text class="label" size="small">
+                  {textEmbed()!.author!.name}
+                </Text>
+              </OverflowingText>
+            </RenderAnchor>
+          </SiteInformation>
+        </Show>
+
         <Show
           when={
             props.embed.type === "Website" &&
@@ -136,6 +230,23 @@ export function TextEmbed(props: { embed: TextEmbedClass | WebsiteEmbed }) {
           <Attachment file={(props.embed as TextEmbedClass).media!} />
         </Show>
 
+        <Show when={textEmbed()?.fields?.length}>
+          <FieldGrid>
+            <For each={textEmbed()!.fields}>
+              {(field) => (
+                <Field inline={field.inline ?? false}>
+                  <FieldName>{field.name}</FieldName>
+                  <Markdown content={field.value} />
+                </Field>
+              )}
+            </For>
+          </FieldGrid>
+        </Show>
+
+        <Show when={textEmbed()?.image}>
+          <EmbedImage src={textEmbed()!.proxiedImageURL} loading="lazy" />
+        </Show>
+
         <Show when={props.embed.type === "Website"}>
           <Switch>
             <Match
@@ -178,6 +289,28 @@ export function TextEmbed(props: { embed: TextEmbedClass | WebsiteEmbed }) {
             </Match>
           </Switch>
         </Show>
+
+        <Show when={textEmbed()?.footer || textEmbed()?.timestamp}>
+          <Footer>
+            <Show when={textEmbed()?.footer?.icon_url}>
+              <FooterIcon
+                loading="lazy"
+                draggable={false}
+                src={textEmbed()!.proxiedFooterIconURL}
+                onError={(e) => (e.currentTarget.style.display = "none")}
+              />
+            </Show>
+            <Show when={textEmbed()?.footer}>
+              <span>{textEmbed()!.footer!.text}</span>
+            </Show>
+            <Show when={textEmbed()?.footer && textEmbed()?.timestamp}>
+              <span>•</span>
+            </Show>
+            <Show when={textEmbed()?.timestamp}>
+              <span>{textEmbed()!.timestamp!.toLocaleString()}</span>
+            </Show>
+          </Footer>
+        </Show>
       </Content>
 
       <Show
@@ -191,6 +324,9 @@ export function TextEmbed(props: { embed: TextEmbedClass | WebsiteEmbed }) {
           src={(props.embed as WebsiteEmbed).image!.proxiedURL}
           loading="lazy"
         />
+      </Show>
+      <Show when={textEmbed()?.thumbnail}>
+        <PreviewImage src={textEmbed()!.proxiedThumbnailURL} loading="lazy" />
       </Show>
     </Base>
   );
