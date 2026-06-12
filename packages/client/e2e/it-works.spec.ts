@@ -10,3 +10,12 @@ test("shows a working login page", async ({ page }) => {
 
   await expect(page.getByText(/Sign into Stoat/)).toBeVisible();
 });
+
+test("prefills invite code when signing up from an invite link", async ({
+  page,
+}) => {
+  await page.goto("/invite/xxxxxxxx");
+
+  await expect(page).toHaveURL(/\/login\/create\/xxxxxxxx$/);
+  await expect(page.locator('input[name="invite"]')).toHaveValue("xxxxxxxx");
+});

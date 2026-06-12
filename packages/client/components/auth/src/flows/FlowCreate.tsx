@@ -32,7 +32,7 @@ export default function FlowCreate() {
     const email = data.get("email") as string;
     const password = data.get("new-password") as string;
     const captcha = data.get("captcha") as string;
-    const invite = data.get("invite") as string;
+    const invite = (data.get("invite") as string) || code;
 
     await api.post("/auth/account/create", {
       email,
@@ -72,7 +72,7 @@ export default function FlowCreate() {
       </FlowTitle>
       <Form onSubmit={create} captcha={CONFIGURATION.HCAPTCHA_SITEKEY}>
         <Fields fields={["email", "new-password"]} />
-        <Show when={isInviteOnly()}>
+        <Show when={isInviteOnly() || code}>
           <Fields fields={[{ field: "invite", value: code }]} />
         </Show>
         <Row justify>

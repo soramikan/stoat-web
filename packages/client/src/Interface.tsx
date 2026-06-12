@@ -69,6 +69,15 @@ const Interface = (props: { children: JSX.Element }) => {
     ].includes(lifecycle.state());
   }
 
+  function loginRedirectPath() {
+    const inviteMatch = location.pathname.match(/^\/invite\/([^/]+)/);
+    if (inviteMatch) {
+      return `/login/create/${inviteMatch[1]}`;
+    }
+
+    return "/login";
+  }
+
   return (
     <MessageCache client={client()}>
       <div
@@ -82,7 +91,7 @@ const Interface = (props: { children: JSX.Element }) => {
         <Titlebar />
         <Switch fallback={<CircularProgress />}>
           <Match when={!isLoggedIn()}>
-            <Navigate href="/login" />
+            <Navigate href={loginRedirectPath()} />
           </Match>
           <Match when={lifecycle.loadedOnce()}>
             <Layout
