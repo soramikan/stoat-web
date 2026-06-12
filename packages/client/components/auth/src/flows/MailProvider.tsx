@@ -2,7 +2,7 @@ import { Show } from "solid-js";
 
 import { Trans } from "@lingui-solid/solid/macro";
 
-import { Button } from "@revolt/ui";
+import { ButtonLink } from "@revolt/ui";
 
 interface Props {
   email?: string;
@@ -123,11 +123,9 @@ export function MailProvider(props: Props) {
 
   return (
     <Show when={provider()}>
-      <a href={provider()![1]} target="_blank" rel="noreferrer">
-        <Button>
-          <Trans>Open {provider()![0]}</Trans>
-        </Button>
-      </a>
+      <ButtonLink href={provider()![1]} target="_blank" rel="noreferrer">
+        <Trans>Open {provider()![0]}</Trans>
+      </ButtonLink>
     </Show>
   );
 }

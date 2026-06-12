@@ -3,7 +3,7 @@ import { Trans } from "@lingui-solid/solid/macro";
 import { useApi } from "@revolt/client";
 import { CONFIGURATION } from "@revolt/common";
 import { useNavigate } from "@revolt/routing";
-import { Button } from "@revolt/ui";
+import { Button, ButtonLink } from "@revolt/ui";
 
 import { FlowTitle } from "./Flow";
 import { setFlowCheckEmail } from "./FlowCheck";
@@ -44,11 +44,9 @@ export default function FlowResend() {
           <Trans>Resend</Trans>
         </Button>
       </Form>
-      <a href="/login/auth">
-        <Button variant="text">
-          <Trans>Go back to login</Trans>
-        </Button>
-      </a>
+      <ButtonLink href="/login/auth" variant="text">
+        <Trans>Go back to login</Trans>
+      </ButtonLink>
     </>
   );
 }

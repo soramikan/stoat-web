@@ -5,7 +5,7 @@ import { Trans } from "@lingui-solid/solid/macro";
 import { useApi, useClientLifecycle } from "@revolt/client";
 import { useModals } from "@revolt/modal";
 import { useNavigate, useParams } from "@revolt/routing";
-import { Button, CircularProgress } from "@revolt/ui";
+import { Button, ButtonLink, CircularProgress } from "@revolt/ui";
 
 import { FlowTitle } from "./Flow";
 
@@ -96,11 +96,9 @@ export default function FlowVerify() {
             (state() as State & { state: "error" }).error
           )}
         </Text> TODO */}
-        <a href="/login/auth">
-          <Button variant="text">
-            <Trans>Go back to login</Trans>
-          </Button>
-        </a>
+        <ButtonLink href="/login/auth" variant="text">
+          <Trans>Go back to login</Trans>
+        </ButtonLink>
       </Match>
       <Match when={state().state === "success"}>
         <FlowTitle>
@@ -111,11 +109,9 @@ export default function FlowVerify() {
             <Trans>Continue to app</Trans>
           </Button>
         </Show>
-        <a href="/login/auth">
-          <Button variant="text">
-            <Trans>Go back to login</Trans>
-          </Button>
-        </a>
+        <ButtonLink href="/login/auth" variant="text">
+          <Trans>Go back to login</Trans>
+        </ButtonLink>
       </Match>
     </Switch>
   );

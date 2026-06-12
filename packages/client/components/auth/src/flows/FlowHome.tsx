@@ -6,7 +6,7 @@ import { css } from "styled-system/css";
 import { useClientLifecycle } from "@revolt/client";
 import { TransitionType } from "@revolt/client/Controller";
 import { Navigate } from "@revolt/routing";
-import { Button, Column } from "@revolt/ui";
+import { Button, ButtonLink, Column } from "@revolt/ui";
 
 import { useState } from "@revolt/state";
 import Wordmark from "../../../../public/assets/web/wordmark.svg?component-solid";
@@ -65,20 +65,12 @@ export default function FlowHome() {
             </Column>
 
             <Column>
-              <a href="/login/auth">
-                <Column>
-                  <Button>
-                    <Trans>Log In</Trans>
-                  </Button>
-                </Column>
-              </a>
-              <a href="/login/create">
-                <Column>
-                  <Button variant="tonal">
-                    <Trans>Sign Up</Trans>
-                  </Button>
-                </Column>
-              </a>
+              <ButtonLink href="/login/auth">
+                <Trans>Log In</Trans>
+              </ButtonLink>
+              <ButtonLink href="/login/create" variant="tonal">
+                <Trans>Sign Up</Trans>
+              </ButtonLink>
             </Column>
           </Column>
         </>

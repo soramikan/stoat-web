@@ -8,6 +8,7 @@ import { useModals } from "@revolt/modal";
 import { Navigate } from "@revolt/routing";
 import {
   Button,
+  ButtonLink,
   CircularProgress,
   Column,
   Row,
@@ -68,23 +69,17 @@ export default function FlowLogin() {
             <Form onSubmit={performLogin}>
               <Fields fields={["email", "password"]} />
               <Column gap="xl" align>
-                <a href="/login/reset">
-                  <Button variant="text">
-                    <Trans>Reset password</Trans>
-                  </Button>
-                </a>
-                <a href="/login/resend">
-                  <Button variant="text">
-                    <Trans>Resend verification</Trans>
-                  </Button>
-                </a>
+                <ButtonLink href="/login/reset" variant="text">
+                  <Trans>Reset password</Trans>
+                </ButtonLink>
+                <ButtonLink href="/login/resend" variant="text">
+                  <Trans>Resend verification</Trans>
+                </ButtonLink>
               </Column>
               <Row align justify>
-                <a href="..">
-                  <Button variant="text">
-                    <MdArrowBack {...iconSize("1.2em")} /> <Trans>Back</Trans>
-                  </Button>
-                </a>
+                <ButtonLink href=".." variant="text">
+                  <MdArrowBack {...iconSize("1.2em")} /> <Trans>Back</Trans>
+                </ButtonLink>
                 <Button type="submit">
                   <Trans>Login</Trans>
                 </Button>

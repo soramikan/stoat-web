@@ -29,7 +29,7 @@
 
 export { Avatar } from "./Avatar";
 export { Badge } from "./Badge";
-export { Button } from "./Button";
+export { Button, ButtonLink } from "./Button";
 export { type CategorySelectOption, CategoryButton } from "./CategoryButton";
 export { Checkbox } from "./Checkbox";
 export { DataTable } from "./DataTable";

@@ -21,6 +21,15 @@ type Props = Omit<
   bg?: string;
 };
 
+type LinkProps = Omit<
+  Parameters<typeof button>[0] &
+    JSX.AnchorHTMLAttributes<HTMLAnchorElement> & {
+      groupActive?: boolean;
+      bg?: string;
+    },
+  "_permitAnimation" | "disabled"
+>;
+
 /**
  * Buttons prompt most actions in a UI
  *
@@ -151,6 +160,55 @@ export function Button(props: Props) {
       </Show>
       {rest.children}
     </button>
+  );
+}
+
+/**
+ * Native anchor styled as a button.
+ *
+ * Use this for navigation. It deliberately avoids createButton/createPress so
+ * iOS standalone PWAs keep the browser's native link activation behavior.
+ */
+export function ButtonLink(props: LinkProps) {
+  const [style, rest] = splitProps(props, [
+    "bg",
+    "size",
+    "shape",
+    "variant",
+    "group",
+    "groupActive",
+    "style",
+  ]);
+
+  const shape = () =>
+    style.group
+      ? style.groupActive !== (style.group === "standard")
+        ? "round"
+        : "square"
+      : style.shape;
+
+  const variant = () =>
+    style.group ? (style.groupActive ? "filled" : "tonal") : style.variant;
+
+  return (
+    <a
+      {...rest}
+      class={button({
+        shape: shape(),
+        variant: variant(),
+        size: style.size,
+        group: style.group,
+        disabled: false,
+        _permitAnimation: false,
+      })}
+      style={{
+        ...(typeof style.style === "object" ? style.style : {}),
+        "background-color": style.bg,
+      }}
+    >
+      <Ripple />
+      {rest.children}
+    </a>
   );
 }
 

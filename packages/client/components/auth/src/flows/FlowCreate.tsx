@@ -4,7 +4,7 @@ import { useApi, useClient, useClientLifecycle } from "@revolt/client";
 import { CONFIGURATION } from "@revolt/common";
 import { useModals } from "@revolt/modal";
 import { useNavigate, useParams } from "@revolt/routing";
-import { Button, Row, iconSize } from "@revolt/ui";
+import { Button, ButtonLink, Row, iconSize } from "@revolt/ui";
 
 import MdArrowBack from "@material-design-icons/svg/filled/arrow_back.svg?component-solid";
 
@@ -76,11 +76,9 @@ export default function FlowCreate() {
           <Fields fields={[{ field: "invite", value: code }]} />
         </Show>
         <Row justify>
-          <a href="..">
-            <Button variant="text">
-              <MdArrowBack {...iconSize("1.2em")} /> <Trans>Back</Trans>
-            </Button>
-          </a>
+          <ButtonLink href=".." variant="text">
+            <MdArrowBack {...iconSize("1.2em")} /> <Trans>Back</Trans>
+          </ButtonLink>
           <Button type="submit">
             <Trans>Register</Trans>
           </Button>
