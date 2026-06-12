@@ -148,6 +148,19 @@ const Footer = styled("div", {
   },
 });
 
+function formatEmbedTimestamp(timestamp: Date) {
+  if (Number.isNaN(timestamp.getTime())) return undefined;
+
+  return new Intl.DateTimeFormat(undefined, {
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+    hour: "numeric",
+    minute: "2-digit",
+    timeZoneName: "short",
+  }).format(timestamp);
+}
+
 /**
  * Text Embed
  */
@@ -155,6 +168,10 @@ export function TextEmbed(props: { embed: TextEmbedClass | WebsiteEmbed }) {
   const { openModal } = useModals();
   const textEmbed = () =>
     props.embed.type === "Text" ? (props.embed as TextEmbedClass) : undefined;
+  const formattedTimestamp = () => {
+    const timestamp = textEmbed()?.timestamp;
+    return timestamp && formatEmbedTimestamp(timestamp);
+  };
 
   return (
     <Base
@@ -315,7 +332,7 @@ export function TextEmbed(props: { embed: TextEmbedClass | WebsiteEmbed }) {
           </Switch>
         </Show>
 
-        <Show when={textEmbed()?.footer || textEmbed()?.timestamp}>
+        <Show when={textEmbed()?.footer || formattedTimestamp()}>
           <Footer>
             <Show when={textEmbed()?.footer?.icon_url}>
               <FooterIcon
@@ -328,11 +345,16 @@ export function TextEmbed(props: { embed: TextEmbedClass | WebsiteEmbed }) {
             <Show when={textEmbed()?.footer}>
               <span>{textEmbed()!.footer!.text}</span>
             </Show>
-            <Show when={textEmbed()?.footer && textEmbed()?.timestamp}>
+            <Show when={textEmbed()?.footer && formattedTimestamp()}>
               <span>•</span>
             </Show>
-            <Show when={textEmbed()?.timestamp}>
-              <span>{textEmbed()!.timestamp!.toLocaleString()}</span>
+            <Show when={formattedTimestamp()}>
+              <time
+                dateTime={textEmbed()!.timestamp!.toISOString()}
+                title={textEmbed()!.timestamp!.toISOString()}
+              >
+                {formattedTimestamp()}
+              </time>
             </Show>
           </Footer>
         </Show>
