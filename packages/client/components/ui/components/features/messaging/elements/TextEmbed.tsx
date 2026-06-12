@@ -181,6 +181,18 @@ export function TextEmbed(props: { embed: TextEmbedClass | WebsiteEmbed }) {
           </SiteInformation>
         </Show>
 
+        <Show when={textEmbed()?.provider?.name}>
+          <SiteInformation>
+            <RenderAnchor href={textEmbed()!.provider!.url}>
+              <OverflowingText>
+                <Text class="label" size="small">
+                  {textEmbed()!.provider!.name}
+                </Text>
+              </OverflowingText>
+            </RenderAnchor>
+          </SiteInformation>
+        </Show>
+
         <Show
           when={
             props.embed.type === "Website" &&
@@ -245,6 +257,19 @@ export function TextEmbed(props: { embed: TextEmbedClass | WebsiteEmbed }) {
 
         <Show when={textEmbed()?.image}>
           <EmbedImage src={textEmbed()!.proxiedImageURL} loading="lazy" />
+        </Show>
+
+        <Show when={textEmbed()?.video}>
+          <SizedContent
+            width={textEmbed()!.video!.width ?? 1280}
+            height={textEmbed()!.video!.height ?? 720}
+          >
+            <video
+              controls
+              preload="metadata"
+              src={textEmbed()!.proxiedVideoURL}
+            />
+          </SizedContent>
         </Show>
 
         <Show when={props.embed.type === "Website"}>
