@@ -4,11 +4,12 @@ import { Trans } from "@lingui-solid/solid/macro";
 import { useMutation } from "@tanstack/solid-query";
 import { styled } from "styled-system/jsx";
 
-import { CONFIGURATION } from "@revolt/common";
 import { Dialog, DialogProps } from "@revolt/ui";
 
 import { useModals } from "..";
 import { Modals } from "../types";
+
+const CANONICAL_INVITE_BASE_URL = "https://chat.setoka.net/invite";
 
 /**
  * Code block which displays invite
@@ -41,13 +42,7 @@ export function CreateInviteModal(
     mutationFn: () =>
       props.channel
         .createInvite()
-        .then(({ _id }) =>
-          setLink(
-            CONFIGURATION.IS_STOAT
-              ? `https://stt.gg/${_id}`
-              : `${window.location.protocol}//${window.location.host}/invite/${_id}`,
-          ),
-        ),
+        .then(({ _id }) => setLink(`${CANONICAL_INVITE_BASE_URL}/${_id}`)),
     onError: showError,
   }));
 

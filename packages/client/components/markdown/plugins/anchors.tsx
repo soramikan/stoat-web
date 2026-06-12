@@ -88,7 +88,7 @@ export function RenderAnchor(
       return <span>{remoteProps.children}</span>;
     }
 
-    // Remap discover links to native links
+    // Remap legacy short links to native links
     if (url.origin === "https://rvlt.gg" || url.origin === "https://stt.gg") {
       if (/^\/[\w\d]+$/.test(url.pathname)) {
         url = new URL(`/invite${url.pathname}`, location.origin);

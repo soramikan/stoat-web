@@ -8,7 +8,8 @@ import { Column, Dialog, DialogProps, Form2, Text } from "@revolt/ui";
 import { useModals } from "..";
 import { Modals } from "../types";
 
-const RE_INVITE_URL = /(?:invite|stt.gg)\/([a-z0-9]+)/gi;
+const RE_INVITE_URL =
+  /(?:https?:\/\/)?(?:(?:chat\.setoka\.net|stoat\.chat|app\.revolt\.chat)\/invite\/|(?:stt\.gg|rvlt\.gg)\/)([a-z0-9]+)/i;
 
 /**
  * Modal to join a server
@@ -26,7 +27,7 @@ export function JoinServerModal(
 
   async function onSubmit() {
     try {
-      let code = group.controls.link.value;
+      let code = group.controls.link.value.trim();
       const match = RE_INVITE_URL.exec(code);
       if (match) code = match[1];
 
@@ -76,7 +77,7 @@ export function JoinServerModal(
             name="link"
             control={group.controls.link}
             label={t`Code`}
-            placeholder="stt.gg/wVEJDGVs"
+            placeholder="chat.setoka.net/invite/wVEJDGVs"
           />
         </Column>
       </form>
