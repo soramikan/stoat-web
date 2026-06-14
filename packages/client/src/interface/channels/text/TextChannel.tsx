@@ -82,13 +82,14 @@ export function TextChannel(props: ChannelPageProps) {
   // Store last unread message id
   createEffect(
     on(
-      () => props.channel.id,
-      (id) =>
-        setLastId(
-          props.channel.unread
-            ? (client().channelUnreads.get(id)?.lastMessageId as string)
-            : undefined,
-        ),
+      () => ({
+        id: props.channel.id,
+        unread: props.channel.unread,
+        lastMessageId: client().channelUnreads.get(props.channel.id)
+          ?.lastMessageId,
+      }),
+      ({ unread, lastMessageId }) =>
+        setLastId(unread ? (lastMessageId ?? undefined) : undefined),
     ),
   );
 
@@ -101,7 +102,7 @@ export function TextChannel(props: ChannelPageProps) {
         if (unread) {
           if (document.hasFocus()) {
             // acknowledge the message
-            props.channel.ack();
+            void props.channel.ack();
           } else {
             // otherwise mark this location as the last read location
             if (!lastId()) {
@@ -117,7 +118,7 @@ export function TextChannel(props: ChannelPageProps) {
   // Mark as read on re-focus
   function onFocus() {
     if (props.channel.unread && (atEndRef ? atEndRef() : true)) {
-      props.channel.ack();
+      void props.channel.ack();
     }
   }
 
@@ -128,7 +129,7 @@ export function TextChannel(props: ChannelPageProps) {
   createKeybind(KeybindAction.CHAT_JUMP_END, () => {
     // Mark channel as read if not already
     if (props.channel.unread) {
-      props.channel.ack();
+      void props.channel.ack(undefined, true);
     }
 
     // Clear the last unread id
@@ -139,6 +140,14 @@ export function TextChannel(props: ChannelPageProps) {
     // Scroll to the bottom
     jumpToBottomRef?.();
   });
+
+  /**
+   * Mark the channel as read without jumping to the unread marker.
+   */
+  function markRead() {
+    void props.channel.ack(undefined, true);
+    setLastId(undefined);
+  }
 
   // Sidebar scroll target
   let sidebarScrollTargetElement!: HTMLDivElement;
@@ -175,6 +184,7 @@ export function TextChannel(props: ChannelPageProps) {
                   <NewMessages
                     lastId={lastId}
                     jumpBack={() => navigate(lastId()!)}
+                    markRead={markRead}
                     dismiss={() => setLastId()}
                   />
                 </div>

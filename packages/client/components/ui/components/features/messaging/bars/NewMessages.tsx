@@ -25,6 +25,11 @@ interface Props {
   jumpBack: () => void;
 
   /**
+   * Mark all messages in this channel as read
+   */
+  markRead: () => void | Promise<void>;
+
+  /**
    * Dismiss the message
    */
   dismiss: () => void;
@@ -46,6 +51,14 @@ export function NewMessages(props: Props) {
     props.dismiss();
   }
 
+  /**
+   * Mark all messages as read.
+   */
+  function onMarkRead(e: MouseEvent) {
+    e.stopPropagation();
+    void props.markRead();
+  }
+
   return (
     <Show when={props.lastId()}>
       <FloatingIndicator position="top" onClick={props.jumpBack}>
@@ -55,9 +68,9 @@ export function NewMessages(props: Props) {
             New messages since {dayjs(decodeTime(props.lastId()!)).fromNow()}
           </Trans>
         </span>
-        <span>
-          <Trans>Jump to the beginning</Trans>
-        </span>
+        <Action type="button" onClick={onMarkRead}>
+          <Trans>Mark as read</Trans>
+        </Action>
         <CancelIcon onClick={onCancel}>
           <MdClose {...iconSize(16)} />
         </CancelIcon>
@@ -65,6 +78,19 @@ export function NewMessages(props: Props) {
     </Show>
   );
 }
+
+const Action = styled("button", {
+  base: {
+    border: "none",
+    padding: 0,
+    flexShrink: 0,
+    cursor: "pointer",
+    color: "inherit",
+    font: "inherit",
+    fontWeight: 600,
+    background: "transparent",
+  },
+});
 
 const CancelIcon = styled("div", {
   base: {
